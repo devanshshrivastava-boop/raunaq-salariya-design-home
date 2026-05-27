@@ -1,0 +1,363 @@
+import kitchen from "@/assets/cat-kitchen.jpg";
+import bathroom from "@/assets/cat-bathroom.jpg";
+import pooja from "@/assets/cat-pooja.jpg";
+import balcony from "@/assets/cat-balcony.jpg";
+import dining from "@/assets/cat-dining.jpg";
+import study from "@/assets/cat-study.jpg";
+import wardrobe from "@/assets/cat-wardrobe.jpg";
+import bedroom from "@/assets/work-bedroom.png";
+import living from "@/assets/work-living.png";
+import foyer from "@/assets/work-foyer.png";
+import pool from "@/assets/work-pool.png";
+import villa from "@/assets/work-villa-exterior.png";
+import modernVilla from "@/assets/work-modern-villa.png";
+import hotelLobby from "@/assets/work-hotel-lobby.png";
+import hotelFacade from "@/assets/work-hotel-facade.png";
+
+import sofa from "@/assets/store-sofa.jpg";
+import chair from "@/assets/store-chair.jpg";
+import table from "@/assets/store-table.jpg";
+import chandelier from "@/assets/store-chandelier.jpg";
+import wall from "@/assets/store-wall.jpg";
+import rug from "@/assets/store-rug.jpg";
+
+export type ImageItem = { id: string; title: string; image: string };
+export type Category = { slug: string; name: string; tagline: string; image: string; items: ImageItem[] };
+
+const pool20 = [kitchen, bedroom, living, dining, bathroom, foyer, study, wardrobe, balcony, pooja, modernVilla, hotelLobby, pool, villa, hotelFacade, kitchen, bedroom, dining, living, study];
+
+const makeItems = (titles: string[], imgs: string[]): ImageItem[] =>
+  titles.map((t, i) => ({ id: `${i}`, title: t, image: imgs[i % imgs.length] }));
+
+export const interiorCategories: Category[] = [
+  {
+    slug: "kitchen", name: "Kitchen", tagline: "Modular ateliers for the modern home",
+    image: kitchen,
+    items: makeItems([
+      "Striking Kitchen With A Foldable Breakfast Table",
+      "A Modern Parallel Kitchen In Sage Green",
+      "Pastel Blue Kitchen Design With Classic Detailing",
+      "Spacious Modular Kitchen With Island Counter",
+      "Walnut & Brass U-Shaped Family Kitchen",
+      "Marble Galley Kitchen With Arched Pantry",
+      "Open Plan Kitchen With Indoor Herb Garden",
+      "Bistro-Style Kitchen With Brass Pendants",
+      "Compact L-Shape Kitchen In Antique Ivory",
+      "Heritage Kitchen With Hand-Painted Tile Backsplash",
+      "Two-Tone Kitchen In Cream And Charcoal",
+      "Show Kitchen With Glass Display Cabinetry",
+      "Family Kitchen With Cushioned Banquette",
+      "Italian Trattoria Inspired Kitchen",
+      "Minimalist Stone Kitchen With Brass Inlay",
+      "Vintage English Country Kitchen",
+      "Statement Kitchen With Verde Marble Hood",
+      "Smart Kitchen With Concealed Appliances",
+      "Coastal Kitchen With Whitewashed Oak",
+      "Royal Kitchen With Carved Wood Cornice",
+    ], pool20),
+  },
+  {
+    slug: "bedroom", name: "Bedroom", tagline: "Sanctuaries of rest and ritual",
+    image: bedroom,
+    items: makeItems([
+      "Master Suite With Marble Feature Wall",
+      "Romantic Four-Poster Bedroom In Ivory",
+      "Velvet Headboard Bedroom With Brass Lamps",
+      "Compact Guest Bedroom In Sage And Linen",
+      "Children's Bedroom With Carved Wood Bed",
+      "Penthouse Bedroom With Floor-To-Ceiling Drapes",
+      "Hill-Side Bedroom With Wooden Beams",
+      "Art Deco Inspired Bedroom Suite",
+      "Bridal Suite With Gilded Mirror Wall",
+      "Bohemian Bedroom With Layered Textiles",
+      "Library Bedroom With Built-In Shelves",
+      "Minimalist Japandi Bedroom",
+      "Boudoir With Vintage Vanity And Tufted Bench",
+      "Grandparent's Bedroom With Heritage Trunks",
+      "Loft Bedroom With Skylight And Reading Nook",
+      "Tropical Bedroom With Rattan Headboard",
+      "Hotel-Style Bedroom With Wardrobe Wall",
+      "Romantic Bedroom In Blush And Burgundy",
+      "Mountain View Bedroom With Stone Wall",
+      "Royal Bedroom With Hand-Painted Ceiling",
+    ], pool20),
+  },
+  {
+    slug: "living", name: "Living Room", tagline: "Rooms designed for slow conversation",
+    image: living,
+    items: makeItems([
+      "Formal Drawing Room With Marble Fireplace",
+      "Family Living Room With Modular Sectional",
+      "Conversation Pit With Velvet Banquette",
+      "Library Living Room With Walnut Panels",
+      "Open Plan Living With Dining Integration",
+      "Living Room With Indoor Garden",
+      "Heritage Living Room With Frescoed Ceiling",
+      "Compact Apartment Living With Built-Ins",
+      "Penthouse Lounge With Sculptural Sofa",
+      "Coastal Living Room With Linen And Rattan",
+      "Living Room With Gilded Cornicing",
+      "Industrial Loft Living With Brick & Brass",
+      "Mid-Century Modern Living Room",
+      "Living Room With Curated Art Wall",
+      "Living Room With Tea Service Nook",
+      "Maximalist Living Room In Jewel Tones",
+      "Living Room With Carved Marble Pillars",
+      "Music Room With Grand Piano",
+      "Living Room With Bay Window Reading Seat",
+      "Royal Living Room With Crystal Chandelier",
+    ], pool20),
+  },
+  {
+    slug: "bathroom", name: "Bathroom", tagline: "Marble, water, light",
+    image: bathroom,
+    items: makeItems([
+      "Master Bath With Freestanding Clawfoot Tub",
+      "Powder Room In Verde Marble",
+      "Bathroom With Brass Rain Shower",
+      "His & Hers Vanity With Carrara Counter",
+      "Spa Bathroom With Teak Wood Floor",
+      "Compact Bathroom With Arched Mirror",
+      "Bathroom With Hand-Painted Tile Floor",
+      "Bathroom With Skylight And Stone Tub",
+      "Vintage Bathroom With Pedestal Sink",
+      "Onyx Bathroom With Backlit Walls",
+      "Garden Bathroom With Open Air Shower",
+      "Bathroom With Carved Wood Vanity",
+      "Bathroom In Ivory And Antique Brass",
+      "Children's Bathroom With Soft Pastels",
+      "Guest Bathroom With Wallpapered Walls",
+      "Bathroom With Mosaic Floor Medallion",
+      "Bathroom With Brass Heated Towel Rail",
+      "Bathroom With Stained Glass Window",
+      "Bathroom With Sunken Soaking Tub",
+      "Royal Hammam-Inspired Bathroom",
+    ], pool20),
+  },
+  {
+    slug: "pooja", name: "Pooja Room", tagline: "Sacred geometry, gentle light",
+    image: pooja,
+    items: makeItems([
+      "Carved Teak Mandir With Marble Inlay",
+      "Compact Pooja Niche With Brass Doors",
+      "Pooja Room With Hand-Painted Murals",
+      "Sandalwood Mandir With Jaali Screen",
+      "Marble Pooja Room With Backlit Idols",
+      "Modern Pooja With Walnut & Brass Detail",
+      "Pooja Room With Curved Stone Arch",
+      "Pooja Corner Within Living Room",
+      "Traditional South Indian Pooja Room",
+      "Pooja Room With Floral Stone Carving",
+      "Compact Apartment Pooja Cabinet",
+      "Pooja Room With Glass Doors And Mirror",
+      "Sacred Space With Hanging Brass Bells",
+      "Pooja Room With Mango Wood Pillars",
+      "Heritage Style Pooja Room",
+      "Pooja Room With Carved Ceiling",
+      "Minimal Marble Mandir",
+      "Pooja Room With Hand-Embroidered Drape",
+      "Granite Pooja With Antique Doors",
+      "Royal Pooja Hall With Crystal Diyas",
+    ], pool20),
+  },
+  {
+    slug: "dining", name: "Dining Room", tagline: "Tables that hold stories",
+    image: dining,
+    items: makeItems([
+      "Formal Dining With 12-Seater Walnut Table",
+      "Cozy Dining Nook With Banquette",
+      "Dining Room With Marble Pedestal Table",
+      "Garden Dining Room With Glass Walls",
+      "Dining With Antique Brass Chandelier",
+      "Heritage Dining With Carved Sideboard",
+      "Family Dining With Round Marble Top",
+      "Penthouse Dining With City View",
+      "Dining Room In Forest Green And Brass",
+      "Coastal Dining With Rattan Chairs",
+      "Compact Apartment Dining Wall Booth",
+      "Dining Room With Built-In China Cabinet",
+      "Dining Room With Mirrored Walls",
+      "Italian-Style Dining With Frescoed Ceiling",
+      "Modern Glass Dining With Velvet Chairs",
+      "Dining With Hand-Painted Wallpaper",
+      "Royal Dining Hall With Crystal Lighting",
+      "Bistro Dining Corner With Bar Cabinet",
+      "Outdoor Pergola Dining With Lantern Light",
+      "Tea Room With Wing Chairs And Side Table",
+    ], pool20),
+  },
+  {
+    slug: "balcony", name: "Balcony", tagline: "Where the day softens",
+    image: balcony,
+    items: makeItems([
+      "Jasmine Pergola Balcony With Rattan Chairs",
+      "Compact Balcony Garden With Brass Lanterns",
+      "Sit-Out Balcony With Pebble Floor",
+      "Balcony With Hanging Lounge Chair",
+      "Heritage Verandah With Stone Columns",
+      "Balcony Library With Wooden Shelving",
+      "Romantic Balcony With Bistro Set",
+      "Long Balcony With Day Bed",
+      "Apartment Balcony With Vertical Garden",
+      "Balcony With Terracotta Tiled Floor",
+      "Wraparound Balcony With Café Table",
+      "Balcony With Hammock And Drapery",
+      "Penthouse Balcony With Plunge Pool",
+      "Balcony With Trellis And Bougainvillea",
+      "Reading Balcony With Marble Top Table",
+      "Balcony With Outdoor Daybed Swing",
+      "Tea Balcony With Carved Brass Tray Table",
+      "Balcony With Statement Mosaic Tiles",
+      "Compact Tropical Balcony Retreat",
+      "Royal Balcony Lounge With Drapes",
+    ], pool20),
+  },
+  {
+    slug: "study", name: "Study & Library", tagline: "Quiet rooms for work and wonder",
+    image: study,
+    items: makeItems([
+      "Walnut Library With Chesterfield Sofa",
+      "Compact Home Office With Built-In Desk",
+      "Founder's Study With Brass Lamp",
+      "Library Wall With Rolling Ladder",
+      "Study With Inset Reading Nook",
+      "Modern Study With Curved Bookshelf",
+      "Heritage Study With Globe Bar",
+      "Garden Study With Glass Roof",
+      "Children's Study With Custom Joinery",
+      "Apartment Study With Hidden Bar",
+      "Library Lounge With Velvet Chairs",
+      "Study With Concealed Filing Cabinetry",
+      "Study With Hand-Painted Map Wall",
+      "Library With Spiral Staircase",
+      "Study With Antique Drafting Table",
+      "Study With Curated Object Wall",
+      "Reading Snug With Window Seat",
+      "Study With Brass Banker's Lamp Trio",
+      "Library With Sliding Walnut Doors",
+      "Royal Study With Carved Mantel",
+    ], pool20),
+  },
+  {
+    slug: "wardrobe", name: "Wardrobe", tagline: "Atelier-grade walk-in dressing rooms",
+    image: wardrobe,
+    items: makeItems([
+      "Walk-In Wardrobe With Mirrored Island",
+      "Compact Sliding Wardrobe In Walnut",
+      "Boutique Wardrobe With Display Cabinets",
+      "His & Hers Twin Wardrobe Suite",
+      "Wardrobe With Vanity And Velvet Bench",
+      "Tall Wardrobe With Brass Inlay",
+      "Wardrobe With Glass Display For Handbags",
+      "Wardrobe With Backlit Jewelry Drawers",
+      "Heritage Wardrobe With Carved Doors",
+      "Minimal Wardrobe With Hidden Handles",
+      "Wardrobe With Tweed-Lined Drawers",
+      "Wardrobe With Sliding Mirror Doors",
+      "Wardrobe With Built-In Shoe Wall",
+      "Wardrobe With Centre Chandelier",
+      "Wardrobe With Reading Corner",
+      "Wardrobe With Bar Cabinet Section",
+      "Wardrobe With Marble Top Island",
+      "Wardrobe With Custom Tie & Cufflink Tray",
+      "Apartment Wardrobe With Folding Doors",
+      "Royal Walk-In With Frescoed Ceiling",
+    ], pool20),
+  },
+];
+
+export const storeCategories: Category[] = [
+  {
+    slug: "sofas", name: "Sofas", tagline: "Heritage seating, modern comfort", image: sofa,
+    items: makeItems(Array.from({length: 30}, (_, i) => [
+      "Emerald Velvet Camelback Sofa",
+      "Oxblood Chesterfield Three-Seater",
+      "Ivory Linen Curved Sofa",
+      "Walnut & Cane Bench Sofa",
+      "Brass-Leg Tufted Settee",
+      "Sage Linen Loveseat",
+      "Tuxedo Sofa In Bottle Green",
+      "Carved Mahogany Sofa Set",
+      "Boucle Cloud Sofa",
+      "Persian Print Daybed",
+      "Floral Damask Couch",
+      "Modern Curve Sofa In Cream",
+      "Wingback Heritage Sofa",
+      "Velvet Banquette In Ruby",
+      "Channel Tufted Brass Foot Sofa",
+      "Art Deco Curved Sofa",
+      "Compact Apartment Settee",
+      "Carved Wood Bench With Bolsters",
+      "Tropical Cane Sofa In Teak",
+      "Two-Tone Velvet Sofa",
+    ][i] || `Heritage Sofa No. ${i+1}`), [sofa, chair, sofa, chair, sofa, chair]),
+  },
+  {
+    slug: "chairs", name: "Chairs", tagline: "Accent chairs & lounges", image: chair,
+    items: makeItems(Array.from({length: 30}, (_, i) => [
+      "Oxblood Velvet Tub Chair",
+      "Carved Walnut Side Chair",
+      "Brass-Studded Wingback",
+      "Sage Linen Slipper Chair",
+      "Cane & Teak Lounge",
+      "Cream Boucle Armchair",
+      "Tufted Bergère Chair",
+      "Mid-Century Lounge In Tan",
+      "Folding Heritage Chair",
+      "Carved Throne Chair",
+      "Curved Velvet Slipper",
+      "Antique Brass Bistro Chair",
+      "Reading Chair With Footstool",
+      "Apartment Accent Chair",
+      "Persian Print Wing Chair",
+      "Garden Cane Chair",
+      "Office Library Chair",
+      "Studded Leather Club Chair",
+      "Black Velvet Cocktail Chair",
+      "Heritage Dining Side Chair",
+    ][i] || `Heritage Chair No. ${i+1}`), [chair, sofa, chair, chair]),
+  },
+  {
+    slug: "tables", name: "Dining Tables", tagline: "Tables of provenance", image: table,
+    items: makeItems(Array.from({length: 30}, (_, i) => `Heritage Dining Table No. ${i+1}`), [table]),
+  },
+  {
+    slug: "chandeliers", name: "Chandeliers", tagline: "Light as architecture", image: chandelier,
+    items: makeItems(Array.from({length: 30}, (_, i) => `Antique Chandelier No. ${i+1}`), [chandelier]),
+  },
+  {
+    slug: "wall", name: "Wall Hangings", tagline: "Gilded mirrors & framed art", image: wall,
+    items: makeItems(Array.from({length: 30}, (_, i) => `Gilded Wall Piece No. ${i+1}`), [wall]),
+  },
+  {
+    slug: "rugs", name: "Rugs", tagline: "Hand-knotted floor stories", image: rug,
+    items: makeItems(Array.from({length: 30}, (_, i) => `Heritage Rug No. ${i+1}`), [rug]),
+  },
+];
+
+export const featuredProjects = [
+  { name: "Kohli Residence", type: "Private Villa", year: "2024", image: modernVilla, location: "New Delhi" },
+  { name: "Sharma Residence", type: "Family Home", year: "2023", image: villa, location: "Chandigarh" },
+  { name: "Expansion Villa Interior", type: "Interior", year: "2024", image: living, location: "Gurugram" },
+  { name: "Exterior Elevation Series", type: "Architecture", year: "2023", image: villa, location: "Punjab" },
+  { name: "Aurelia Hotel Lobby", type: "Hospitality", year: "2024", image: hotelLobby, location: "Mumbai" },
+  { name: "Maison Curve Façade", type: "Hospitality", year: "2024", image: hotelFacade, location: "Bengaluru" },
+  { name: "Grand Foyer Commission", type: "Residence", year: "2022", image: foyer, location: "Lucknow" },
+  { name: "Lagoon Pool House", type: "Resort", year: "2024", image: pool, location: "Goa" },
+];
+
+export const testimonials = [
+  { quote: "Raunaq brought our home to life with patience and a designer's poetry. Every corner has intention.", author: "Mrs. R. Kohli", role: "Homeowner, Delhi" },
+  { quote: "We've worked with many studios. RSD is the only one that listens before it speaks.", author: "Mr. A. Sharma", role: "Founder, Sharma Group" },
+  { quote: "An atelier in the truest sense — heritage craft meets contemporary clarity.", author: "Aurelia Hotels", role: "Hospitality Partner" },
+];
+
+export const processSteps = [
+  { n: "I", title: "Discovery", body: "An unhurried conversation. We understand life, ritual, and the spirit of place before sketching a single line." },
+  { n: "II", title: "Concept", body: "Hand sketches, mood boards, and material palettes — the soul of the project is committed to paper." },
+  { n: "III", title: "Design Development", body: "Drawings sharpen into 3D models, joinery details, and lighting plans. Every millimetre is considered." },
+  { n: "IV", title: "Material & Sourcing", body: "Curated marble, walnut, brass, hand-loomed textiles — sourced from artisans across India and beyond." },
+  { n: "V", title: "Execution", body: "Our trusted craftsmen translate drawings into space. Daily site walks. Nothing leaves the floor without our mark." },
+  { n: "VI", title: "Styling", body: "Books, ceramics, art, and light — the layers that turn a finished house into a lived-in home." },
+  { n: "VII", title: "Handover & Legacy", body: "Walk-throughs, care manuals, and a relationship that outlasts the project. Your home is now part of our archive." },
+];
