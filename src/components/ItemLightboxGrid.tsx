@@ -1,45 +1,91 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { ImageItem } from "@/lib/data";
+import { useBookmarks } from "@/hooks/useBookmarks";
 
-export function ItemLightboxGrid({ items }: { items: ImageItem[] }) {
+export function ItemLightboxGrid({
+  items,
+  categorySlug,
+  categoryName,
+  showPrice,
+}: {
+  items: ImageItem[];
+  categorySlug: string;
+  categoryName: string;
+  showPrice?: boolean;
+}) {
   const [active, setActive] = useState<ImageItem | null>(null);
+  const { toggle, has } = useBookmarks();
 
   return (
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {items.map((it, idx) => (
-          <motion.figure
-            key={it.id}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.6, delay: (idx % 6) * 0.05 }}
-            className="group"
-          >
-            <button
-              onClick={() => setActive(it)}
-              className="block w-full text-left"
-              data-cursor="hover"
+        {items.map((it, idx) => {
+          const saved = has({ slug: categorySlug, itemId: it.id });
+          return (
+            <motion.figure
+              key={it.id}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.6, delay: (idx % 6) * 0.05 }}
+              className="group"
             >
-              <div className="gold-frame overflow-hidden">
-                <div className="aspect-[4/3] overflow-hidden bg-[var(--cream)]">
-                  <img
-                    src={it.image}
-                    alt={it.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
-                  />
+              <button
+                onClick={() => setActive(it)}
+                className="block w-full text-left"
+                data-cursor="hover"
+              >
+                <div className="gold-frame overflow-hidden">
+                  <div className="aspect-[4/3] overflow-hidden bg-[var(--cream)]">
+                    <img
+                      src={it.image}
+                      alt={it.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+                    />
+                  </div>
                 </div>
+                <figcaption className="pt-5">
+                  <div className="text-xs eyebrow">No. {String(idx + 1).padStart(2, "0")}</div>
+                  <h3 className="font-serif text-xl mt-1 leading-snug">{it.title}</h3>
+                  {showPrice && it.price && (
+                    <div className="mt-3 flex items-center gap-3">
+                      <span className="price-chip">{it.price}</span>
+                      <span className="text-xs text-[var(--muted-foreground)] italic">price on request adjustable</span>
+                    </div>
+                  )}
+                </figcaption>
+              </button>
+              <div className="mt-4 flex items-center gap-3">
+                <a href="mailto:studio@rsd.in?subject=Quote%20Request" className="btn-quote inline-block">Get Quote</a>
+                {showPrice && (
+                  <button
+                    aria-label={saved ? "Remove bookmark" : "Bookmark"}
+                    title={saved ? "Remove bookmark" : "Bookmark"}
+                    onClick={() =>
+                      toggle({
+                        slug: categorySlug,
+                        itemId: it.id,
+                        title: it.title,
+                        image: it.image,
+                        price: it.price,
+                        category: categoryName,
+                        savedAt: Date.now(),
+                      })
+                    }
+                    className={`bookmark-btn ${saved ? "is-on" : ""}`}
+                    data-cursor="hover"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.6">
+                      <path d="M6 3h12v18l-6-4-6 4V3z" />
+                    </svg>
+                  </button>
+                )}
               </div>
-              <figcaption className="pt-5">
-                <div className="text-xs eyebrow">No. {String(idx + 1).padStart(2, "0")}</div>
-                <h3 className="font-serif text-xl mt-1 leading-snug">{it.title}</h3>
-              </figcaption>
-            </button>
-            <a href="mailto:studio@rsd.in?subject=Quote%20Request" className="btn-quote inline-block mt-4">Get Quote</a>
-          </motion.figure>
-        ))}
+            </motion.figure>
+          );
+        })}
       </div>
 
       <AnimatePresence>
@@ -58,8 +104,13 @@ export function ItemLightboxGrid({ items }: { items: ImageItem[] }) {
               <div className="gold-frame">
                 <img src={active.image} alt={active.title} className="w-full max-h-[78vh] object-contain bg-[var(--ink)]" />
               </div>
-              <div className="flex items-end justify-between mt-5 text-[var(--ivory)]">
-                <h3 className="font-display text-3xl">{active.title}</h3>
+              <div className="flex items-end justify-between mt-5 text-[var(--ivory)] gap-6 flex-wrap">
+                <div>
+                  <h3 className="font-display text-3xl">{active.title}</h3>
+                  {showPrice && active.price && (
+                    <div className="mt-2"><span className="price-chip">{active.price}</span></div>
+                  )}
+                </div>
                 <a href="mailto:studio@rsd.in?subject=Quote%20Request" className="btn-quote !border-[var(--ivory)] !text-[var(--ivory)] hover:!bg-[var(--ivory)] hover:!text-[var(--ink)]">Get Quote</a>
               </div>
             </motion.div>

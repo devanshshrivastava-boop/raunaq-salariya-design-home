@@ -1,7 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import storeHero from "@/assets/store-hero.jpg";
+import { createFileRoute } from "@tanstack/react-router";
 import { storeCategories } from "@/lib/data";
+import { HeroSlider } from "@/components/HeroSlider";
+import { CollageGrid, CollageSection, type CollageTile } from "@/components/CollageGrid";
+import storeHero from "@/assets/store-hero.jpg";
+import sofa from "@/assets/store-sofa.jpg";
+import chandelier from "@/assets/store-chandelier.jpg";
+import chair from "@/assets/store-chair.jpg";
+import rug from "@/assets/store-rug.jpg";
+import wall from "@/assets/store-wall.jpg";
 
 export const Route = createFileRoute("/store")({
   head: () => ({
@@ -15,51 +21,41 @@ export const Route = createFileRoute("/store")({
   component: Store,
 });
 
+const slides = [
+  { image: storeHero, eyebrow: "Hodch Store", title: "Objects with", italic: "provenance.", caption: "A curated edit of furniture, lighting and textiles — used in our projects, available for yours." },
+  { image: sofa, eyebrow: "New Arrivals", title: "Velvet and", italic: "walnut.", caption: "Sofas built by hand by craftsmen we've worked with for years." },
+  { image: chandelier, eyebrow: "Light", title: "Crystal and", italic: "brass.", caption: "Chandeliers chosen one room at a time." },
+  { image: rug, eyebrow: "Floor Stories", title: "Knotted by", italic: "hand.", caption: "Persian, Kashmir and Tibetan rugs from master weavers." },
+  { image: wall, eyebrow: "The Wall", title: "Mirrors &", italic: "memory.", caption: "Venetian glass, carved wood, and hand-painted panels." },
+];
+
 function Store() {
+  const tiles: CollageTile[] = storeCategories.map((c, i) => ({
+    id: c.slug,
+    title: c.name,
+    image: c.image,
+    caption: `${c.items.length} pieces`,
+    to: "/store/$slug",
+    params: { slug: c.slug },
+    shape: ([ "wide", "square", "tall", "square", "square", "tall", "square", "wide", "tall", "square", "square", "portrait", "square", "wide" ] as const)[i % 14],
+  }));
+
   return (
     <div>
-      <section className="relative h-[70vh] min-h-[480px] overflow-hidden">
-        <motion.img src={storeHero} alt="Curated heritage objects" className="absolute inset-0 w-full h-full object-cover"
-          initial={{ scale: 1.12 }} animate={{ scale: 1 }} transition={{ duration: 2.2, ease: [0.22,1,0.36,1] }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--ink)]/55 via-[var(--ink)]/30 to-[var(--ivory)]" />
-        <div className="relative h-full max-w-7xl mx-auto px-6 lg:px-12 flex flex-col justify-end pb-16 text-[var(--ivory)]">
-          <div className="eyebrow text-[var(--gold-soft)]">Hodch Store</div>
-          <h1 className="font-display text-7xl lg:text-9xl mt-3 leading-[0.92]">
-            Objects with <em className="italic text-[var(--gold-soft)]">provenance.</em>
-          </h1>
-          <p className="font-serif text-lg max-w-xl mt-5 text-[var(--ivory)]/85">
-            A curated edit of furniture, lighting and textiles — used in our projects, available for yours.
-          </p>
-        </div>
-      </section>
+      <HeroSlider slides={slides} interval={5000} />
 
-      <section className="max-w-7xl mx-auto px-6 lg:px-12 py-24">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-          {storeCategories.map((c, i) => (
-            <motion.div
-              key={c.slug}
-              initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              transition={{ duration: 0.7, delay: (i % 3) * 0.08 }}
-            >
-              <Link to="/store/$slug" params={{ slug: c.slug }} className="group block" data-cursor="hover">
-                <div className="gold-frame overflow-hidden">
-                  <div className="aspect-square overflow-hidden bg-[var(--cream)]">
-                    <img src={c.image} alt={c.name} loading="lazy" className="w-full h-full object-cover transition-transform duration-[1400ms] group-hover:scale-110" />
-                  </div>
-                </div>
-                <div className="pt-5 flex items-baseline justify-between">
-                  <div>
-                    <h2 className="font-display text-3xl">{c.name}</h2>
-                    <div className="eyebrow mt-1">{c.tagline}</div>
-                  </div>
-                  <span className="font-serif italic text-[var(--gold)]">{c.items.length} pieces →</span>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      <CollageSection
+        eyebrow="The Edit"
+        title={<>A house, in <em className="italic text-[var(--gold)]">fourteen rooms.</em></>}
+        intro={
+          <>
+            From sofas to silver, from clocks to clay — each collection is curated by the studio.
+            Press a tile to walk the room. <span className="script text-2xl text-[var(--gold)]">Be welcome.</span>
+          </>
+        }
+      >
+        <CollageGrid tiles={tiles} />
+      </CollageSection>
     </div>
   );
 }

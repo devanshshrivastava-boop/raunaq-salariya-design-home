@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StoreRouteImport } from './routes/store'
 import { Route as InteriorsRouteImport } from './routes/interiors'
+import { Route as BookmarksRouteImport } from './routes/bookmarks'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InteriorsIndexRouteImport } from './routes/interiors.index'
 import { Route as StoreSlugRouteImport } from './routes/store.$slug'
@@ -26,6 +27,11 @@ const StoreRoute = StoreRouteImport.update({
 const InteriorsRoute = InteriorsRouteImport.update({
   id: '/interiors',
   path: '/interiors',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookmarksRoute = BookmarksRouteImport.update({
+  id: '/bookmarks',
+  path: '/bookmarks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -61,6 +67,7 @@ const InteriorsServicesSlugRoute = InteriorsServicesSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bookmarks': typeof BookmarksRoute
   '/interiors': typeof InteriorsRouteWithChildren
   '/store': typeof StoreRouteWithChildren
   '/interiors/journal': typeof InteriorsJournalRoute
@@ -71,6 +78,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bookmarks': typeof BookmarksRoute
   '/store': typeof StoreRouteWithChildren
   '/interiors/journal': typeof InteriorsJournalRoute
   '/interiors/process': typeof InteriorsProcessRoute
@@ -81,6 +89,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bookmarks': typeof BookmarksRoute
   '/interiors': typeof InteriorsRouteWithChildren
   '/store': typeof StoreRouteWithChildren
   '/interiors/journal': typeof InteriorsJournalRoute
@@ -93,6 +102,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/bookmarks'
     | '/interiors'
     | '/store'
     | '/interiors/journal'
@@ -103,6 +113,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/bookmarks'
     | '/store'
     | '/interiors/journal'
     | '/interiors/process'
@@ -112,6 +123,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/bookmarks'
     | '/interiors'
     | '/store'
     | '/interiors/journal'
@@ -123,6 +135,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BookmarksRoute: typeof BookmarksRoute
   InteriorsRoute: typeof InteriorsRouteWithChildren
   StoreRoute: typeof StoreRouteWithChildren
 }
@@ -141,6 +154,13 @@ declare module '@tanstack/react-router' {
       path: '/interiors'
       fullPath: '/interiors'
       preLoaderRoute: typeof InteriorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bookmarks': {
+      id: '/bookmarks'
+      path: '/bookmarks'
+      fullPath: '/bookmarks'
+      preLoaderRoute: typeof BookmarksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -218,19 +238,10 @@ const StoreRouteWithChildren = StoreRoute._addFileChildren(StoreRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BookmarksRoute: BookmarksRoute,
   InteriorsRoute: InteriorsRouteWithChildren,
   StoreRoute: StoreRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
