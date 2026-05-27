@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { useRef } from "react";
 import hero from "@/assets/hero-home.jpg";
 import founder from "@/assets/founder.png";
 import atelier from "@/assets/atelier.jpg";
 import { featuredProjects, testimonials } from "@/lib/data";
+import { BouncingTitle } from "@/components/BouncingTitle";
+import { NaturalParallax } from "@/components/NaturalParallax";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -19,31 +22,37 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const heroRef = useRef<HTMLElement>(null);
   return (
     <div>
-      {/* HERO */}
-      <section className="relative h-[92vh] min-h-[640px] overflow-hidden">
-        <motion.img
-          src={hero}
-          alt="Vintage Indian villa interior at golden hour"
-          className="absolute inset-0 w-full h-full object-cover"
-          initial={{ scale: 1.15 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 2.4, ease: [0.22, 1, 0.36, 1] }}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[var(--ink)]/30 via-transparent to-[var(--ivory)]" />
-        <div className="relative h-full max-w-7xl mx-auto px-6 lg:px-12 flex flex-col justify-end pb-20">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 0.4 }}
-          >
+      {/* HERO with naturalistic 3D parallax + bouncing letters */}
+      <section ref={heroRef} className="relative h-[94vh] min-h-[660px] overflow-hidden">
+        <div data-parallax="hero" className="absolute inset-0 will-change-transform">
+          <img
+            src={hero}
+            alt="Vintage Indian villa interior at golden hour"
+            className="w-full h-full object-cover"
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--ink)]/30 via-transparent to-[var(--ivory)] z-[2]" />
+        <NaturalParallax heroRef={heroRef} />
+
+        <div className="relative h-full max-w-7xl mx-auto px-6 lg:px-12 flex flex-col justify-end pb-24 z-10">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1.4 }}>
             <div className="eyebrow text-[var(--gold-soft)]">Founder · Principal Designer</div>
-            <h1 className="font-display text-[clamp(3rem,9vw,9rem)] leading-[0.95] text-[var(--ivory)] mt-3">
-              Raunaq<br/><em className="font-serif italic text-[var(--gold-soft)]">Salariya</em>
-            </h1>
-            <p className="mt-6 max-w-xl text-[var(--ivory)]/85 text-lg font-serif">
-              An attempt to capture the spirit of our times — and engage in the exciting potential that bubbles at the surface of Modern India.
-            </p>
           </motion.div>
+          <BouncingTitle
+            text="Raunaq"
+            italic="Salariya"
+            className="text-[clamp(3.2rem,9.5vw,10rem)] text-[var(--ivory)] mt-3"
+            delay={0.15}
+          />
+          <motion.p
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 1.2 }}
+            className="mt-7 max-w-xl text-[var(--ivory)]/85 text-lg font-serif italic"
+          >
+            An attempt to capture the spirit of our times — and engage in the exciting potential that bubbles at the surface of <span className="script text-2xl text-[var(--gold-soft)]"> Modern India.</span>
+          </motion.p>
         </div>
       </section>
 
@@ -59,6 +68,7 @@ function Home() {
           <div className="text-center mt-5">
             <div className="font-display text-2xl">Mr. Raunaq Salariya</div>
             <div className="eyebrow mt-1">Founder · B.Sc. Interior Design, Amity</div>
+            <div className="script text-2xl text-[var(--gold)] mt-2">— with affection</div>
           </div>
         </motion.div>
 
@@ -68,11 +78,11 @@ function Home() {
         >
           <div className="eyebrow">The Designer</div>
           <h2 className="font-display text-5xl lg:text-6xl mt-3 leading-[1.05]">A practice rooted in <em className="italic text-[var(--oxblood)]">restraint, ritual</em>, and craft.</h2>
-          <div className="ornament-rule my-8"><span className="text-xs tracking-[0.4em]">EST. ATELIER</span></div>
-          <div className="space-y-5 font-serif text-lg leading-relaxed">
-            <p>Founder of Raunaq Salariya Designs, Mr. Raunaq holds a <strong>B.Sc. (Interior Design) from Amity School of Design, Noida</strong> — with five vibrant years of professional experience in bringing complex and exciting designs to life.</p>
+          <div className="gold-divider my-8"><span className="line" /><span className="text-xs tracking-[0.4em] uppercase font-sans">Est. Atelier</span><span className="line" /></div>
+          <div className="space-y-5 body-text">
+            <p className="drop-cap">Founder of Raunaq Salariya Designs, Mr. Raunaq holds a <strong>B.Sc. (Interior Design) from Amity School of Design, Noida</strong> — with five vibrant years of professional experience in bringing complex and exciting designs to life. The studio is a continuation of a family legacy: a grandfather's house, a draftsman's table, a discipline of drawing before deciding.</p>
             <p>Having lived and worked in multiple cities, he carries a sense of professionalism and integrity that has largely defined his career and design background. His belief is that design can be art, design can be aesthetics, and good design is always simple — which is precisely why it is so complicated to execute.</p>
-            <p>He also believes that building space is a team effort, and that having a large, professional team is the key that sets us apart.</p>
+            <p>He also believes that building space is a team effort, and that having a large, professional team of craftsmen, draftsmen, conservators and stylists is the key that sets the practice apart.</p>
           </div>
           <div className="grid grid-cols-3 gap-6 mt-10 pt-10 border-t border-[var(--border)]">
             {[["05+","Years of practice"],["40+","Commissions"],["12","Cities served"]].map(([n,l]) => (
@@ -85,15 +95,17 @@ function Home() {
         </motion.div>
       </section>
 
-      {/* WORK */}
-      <section className="bg-[var(--cream)]/60 py-28 border-y border-[var(--border)]">
+      {/* WORK — The Archive (expanded) */}
+      <section className="bg-[var(--cream)]/60 py-28 border-y border-[var(--border)] aged-paper">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="flex items-end justify-between flex-wrap gap-6 mb-14">
             <div>
               <div className="eyebrow">Selected Commissions</div>
-              <h2 className="font-display text-5xl lg:text-6xl mt-3">The Archive.</h2>
+              <h2 className="font-display text-5xl lg:text-6xl mt-3">The <em className="italic text-[var(--gold)]">Archive.</em></h2>
             </div>
-            <p className="max-w-md font-serif text-[var(--muted-foreground)]">Villas, residences, hotels and restaurants — a chronicle of work executed across the country.</p>
+            <p className="max-w-md body-text text-[var(--muted-foreground)]">
+              Villas, residences, hotels and restaurants — a chronicle of work executed across the country over the past decade.
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
