@@ -23,7 +23,8 @@ function InteriorsLayout() {
   const { pathname } = useLocation();
   return (
     <div>
-      <div className="border-b border-[var(--border)] bg-[var(--cream)]/40 sticky top-[81px] z-30 backdrop-blur-md">
+      {/* In-flow sub-nav: scrolls away under the main navbar, not sticky */}
+      <div className="border-b border-[var(--border)] bg-[var(--cream)]/40 relative z-10">
         <div className="max-w-7xl mx-auto px-6 lg:px-12 py-4 flex flex-wrap items-center justify-between gap-4">
           <Link to="/interiors" className="font-display text-2xl tracking-wide">Interio <em className="italic text-[var(--gold)]">Spaces</em></Link>
           <nav className="flex gap-8">
