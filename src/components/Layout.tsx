@@ -1,6 +1,7 @@
 import { Link, Outlet, useRouterState } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { CustomCursor } from "./CustomCursor";
+import { useBookmarks } from "@/hooks/useBookmarks";
 import logo from "@/assets/rsd-logo.jpg";
 
 const navItems = [
@@ -11,6 +12,7 @@ const navItems = [
 
 export function Layout() {
   const { location } = useRouterState();
+  const { count } = useBookmarks();
   return (
     <div className="grain min-h-screen flex flex-col relative">
       <CustomCursor />
@@ -38,8 +40,13 @@ export function Layout() {
               </Link>
             ))}
           </nav>
-          <a href="mailto:studio@rsd.in" className="btn-quote hidden md:inline-block">Commission</a>
-        </div>
+          <div className="hidden md:flex items-center gap-5">
+            <Link to="/bookmarks" className="relative inline-flex items-center gap-2 text-[var(--ink)] hover:text-[var(--gold)] transition" aria-label="Bookmarks" data-cursor="hover">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 3h12v18l-6-4-6 4V3z"/></svg>
+              {count > 0 && <span className="absolute -top-2 -right-3 bg-[var(--oxblood)] text-[var(--ivory)] text-[10px] px-1.5 py-0.5 rounded-full font-sans">{count}</span>}
+            </Link>
+            <a href="mailto:studio@rsd.in" className="btn-quote inline-block">Commission</a>
+          </div>
       </header>
 
       <main className="relative z-10 flex-1">
