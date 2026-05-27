@@ -9,38 +9,140 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StoreRouteImport } from './routes/store'
+import { Route as InteriorsRouteImport } from './routes/interiors'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InteriorsIndexRouteImport } from './routes/interiors.index'
+import { Route as StoreSlugRouteImport } from './routes/store.$slug'
+import { Route as InteriorsProcessRouteImport } from './routes/interiors.process'
+import { Route as InteriorsJournalRouteImport } from './routes/interiors.journal'
+import { Route as InteriorsServicesSlugRouteImport } from './routes/interiors.services.$slug'
 
+const StoreRoute = StoreRouteImport.update({
+  id: '/store',
+  path: '/store',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InteriorsRoute = InteriorsRouteImport.update({
+  id: '/interiors',
+  path: '/interiors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InteriorsIndexRoute = InteriorsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => InteriorsRoute,
+} as any)
+const StoreSlugRoute = StoreSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => StoreRoute,
+} as any)
+const InteriorsProcessRoute = InteriorsProcessRouteImport.update({
+  id: '/process',
+  path: '/process',
+  getParentRoute: () => InteriorsRoute,
+} as any)
+const InteriorsJournalRoute = InteriorsJournalRouteImport.update({
+  id: '/journal',
+  path: '/journal',
+  getParentRoute: () => InteriorsRoute,
+} as any)
+const InteriorsServicesSlugRoute = InteriorsServicesSlugRouteImport.update({
+  id: '/services/$slug',
+  path: '/services/$slug',
+  getParentRoute: () => InteriorsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/interiors': typeof InteriorsRouteWithChildren
+  '/store': typeof StoreRouteWithChildren
+  '/interiors/journal': typeof InteriorsJournalRoute
+  '/interiors/process': typeof InteriorsProcessRoute
+  '/store/$slug': typeof StoreSlugRoute
+  '/interiors/': typeof InteriorsIndexRoute
+  '/interiors/services/$slug': typeof InteriorsServicesSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/store': typeof StoreRouteWithChildren
+  '/interiors/journal': typeof InteriorsJournalRoute
+  '/interiors/process': typeof InteriorsProcessRoute
+  '/store/$slug': typeof StoreSlugRoute
+  '/interiors': typeof InteriorsIndexRoute
+  '/interiors/services/$slug': typeof InteriorsServicesSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/interiors': typeof InteriorsRouteWithChildren
+  '/store': typeof StoreRouteWithChildren
+  '/interiors/journal': typeof InteriorsJournalRoute
+  '/interiors/process': typeof InteriorsProcessRoute
+  '/store/$slug': typeof StoreSlugRoute
+  '/interiors/': typeof InteriorsIndexRoute
+  '/interiors/services/$slug': typeof InteriorsServicesSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/interiors'
+    | '/store'
+    | '/interiors/journal'
+    | '/interiors/process'
+    | '/store/$slug'
+    | '/interiors/'
+    | '/interiors/services/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/store'
+    | '/interiors/journal'
+    | '/interiors/process'
+    | '/store/$slug'
+    | '/interiors'
+    | '/interiors/services/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/interiors'
+    | '/store'
+    | '/interiors/journal'
+    | '/interiors/process'
+    | '/store/$slug'
+    | '/interiors/'
+    | '/interiors/services/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  InteriorsRoute: typeof InteriorsRouteWithChildren
+  StoreRoute: typeof StoreRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/store': {
+      id: '/store'
+      path: '/store'
+      fullPath: '/store'
+      preLoaderRoute: typeof StoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/interiors': {
+      id: '/interiors'
+      path: '/interiors'
+      fullPath: '/interiors'
+      preLoaderRoute: typeof InteriorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,12 +150,87 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/interiors/': {
+      id: '/interiors/'
+      path: '/'
+      fullPath: '/interiors/'
+      preLoaderRoute: typeof InteriorsIndexRouteImport
+      parentRoute: typeof InteriorsRoute
+    }
+    '/store/$slug': {
+      id: '/store/$slug'
+      path: '/$slug'
+      fullPath: '/store/$slug'
+      preLoaderRoute: typeof StoreSlugRouteImport
+      parentRoute: typeof StoreRoute
+    }
+    '/interiors/process': {
+      id: '/interiors/process'
+      path: '/process'
+      fullPath: '/interiors/process'
+      preLoaderRoute: typeof InteriorsProcessRouteImport
+      parentRoute: typeof InteriorsRoute
+    }
+    '/interiors/journal': {
+      id: '/interiors/journal'
+      path: '/journal'
+      fullPath: '/interiors/journal'
+      preLoaderRoute: typeof InteriorsJournalRouteImport
+      parentRoute: typeof InteriorsRoute
+    }
+    '/interiors/services/$slug': {
+      id: '/interiors/services/$slug'
+      path: '/services/$slug'
+      fullPath: '/interiors/services/$slug'
+      preLoaderRoute: typeof InteriorsServicesSlugRouteImport
+      parentRoute: typeof InteriorsRoute
+    }
   }
 }
 
+interface InteriorsRouteChildren {
+  InteriorsJournalRoute: typeof InteriorsJournalRoute
+  InteriorsProcessRoute: typeof InteriorsProcessRoute
+  InteriorsIndexRoute: typeof InteriorsIndexRoute
+  InteriorsServicesSlugRoute: typeof InteriorsServicesSlugRoute
+}
+
+const InteriorsRouteChildren: InteriorsRouteChildren = {
+  InteriorsJournalRoute: InteriorsJournalRoute,
+  InteriorsProcessRoute: InteriorsProcessRoute,
+  InteriorsIndexRoute: InteriorsIndexRoute,
+  InteriorsServicesSlugRoute: InteriorsServicesSlugRoute,
+}
+
+const InteriorsRouteWithChildren = InteriorsRoute._addFileChildren(
+  InteriorsRouteChildren,
+)
+
+interface StoreRouteChildren {
+  StoreSlugRoute: typeof StoreSlugRoute
+}
+
+const StoreRouteChildren: StoreRouteChildren = {
+  StoreSlugRoute: StoreSlugRoute,
+}
+
+const StoreRouteWithChildren = StoreRoute._addFileChildren(StoreRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  InteriorsRoute: InteriorsRouteWithChildren,
+  StoreRoute: StoreRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
