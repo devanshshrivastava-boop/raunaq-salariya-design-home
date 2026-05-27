@@ -39,6 +39,8 @@
   --color-oxblood: var(--oxblood);
   --font-display: "Italiana", serif;
   --font-serif: "Cormorant Garamond", serif;
+  --font-body: "EB Garamond", "Cormorant Garamond", serif;
+  --font-script: "Pinyon Script", cursive;
   --font-sans: "Inter", sans-serif;
 }
 
@@ -167,3 +169,56 @@
   font-size: 10px;
   color: var(--gold);
 }
+
+.script { font-family: var(--font-script); font-weight: 400; }
+.body-text { font-family: var(--font-body); font-size: 1.08rem; line-height: 1.75; }
+.drop-cap::first-letter {
+  font-family: var(--font-display);
+  font-size: 4.2em;
+  float: left;
+  line-height: 0.85;
+  padding-right: 0.1em;
+  padding-top: 0.06em;
+  color: var(--oxblood);
+}
+
+.gold-divider {
+  display: flex; align-items: center; gap: 1.2rem;
+  color: var(--gold);
+}
+.gold-divider::before, .gold-divider::after {
+  content: "❦"; font-size: 14px; opacity: .65;
+}
+.gold-divider .line {
+  flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, color-mix(in oklab, var(--gold) 60%, transparent), transparent);
+}
+
+.aged-paper {
+  position: relative;
+  background:
+    radial-gradient(at 0% 0%, oklch(0.88 0.04 75 / 0.5), transparent 35%),
+    radial-gradient(at 100% 100%, oklch(0.86 0.05 70 / 0.5), transparent 40%),
+    var(--ivory);
+}
+
+.price-chip {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid var(--gold);
+  color: var(--ink);
+  background: color-mix(in oklab, var(--gold) 12%, var(--ivory));
+}
+
+.bookmark-btn {
+  width: 38px; height: 38px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border);
+  background: var(--ivory);
+  transition: all .35s ease;
+}
+.bookmark-btn:hover { border-color: var(--gold); color: var(--oxblood); }
+.bookmark-btn.is-on { background: var(--oxblood); color: var(--ivory); border-color: var(--oxblood); }
