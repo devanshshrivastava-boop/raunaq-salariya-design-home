@@ -34,7 +34,7 @@ function Store() {
     id: c.slug,
     title: c.name,
     image: c.image,
-    caption: `${c.items.length} pieces`,
+    caption: `${c.items.length} Pieces`,
     to: "/store/$slug",
     params: { slug: c.slug },
     shape: ([ "wide", "square", "tall", "square", "square", "tall", "square", "wide", "tall", "square", "square", "portrait", "square", "wide" ] as const)[i % 14],
