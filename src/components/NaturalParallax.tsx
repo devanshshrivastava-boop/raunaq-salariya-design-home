@@ -1,39 +1,51 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Naturalistic layered parallax behind the hero image.
- * - Hero image gets gentle scroll parallax
- * - A grain plane and a warm light-leak plane drift on mouse and scroll
- * - All transforms use translate3d for GPU compositing
+ * Subtle, classy vintage 3D backdrop for the hero.
+ * - Hero image gets gentle scroll parallax + a whisper of mouse-driven tilt (perspective)
+ * - A soft sun-leak and faint dust grain drift quietly on mouse/scroll
+ * - A warm vignette anchors the composition like aged photographic paper
+ * All movement is intentionally restrained — depth, not theatrics.
  */
 export function NaturalParallax({ heroRef }: { heroRef: React.RefObject<HTMLElement | null> }) {
   const leak = useRef<HTMLDivElement>(null);
   const dust = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let mx = 0, my = 0;
+    // lerped state for buttery, lag-free easing
+    let tmx = 0, tmy = 0; // target mouse (-1..1)
+    let mx = 0, my = 0;   // smoothed mouse
     let sy = 0;
     let raf = 0;
 
     const onMove = (e: MouseEvent) => {
-      mx = (e.clientX / window.innerWidth - 0.5) * 2; // -1..1
-      my = (e.clientY / window.innerHeight - 0.5) * 2;
+      tmx = (e.clientX / window.innerWidth - 0.5) * 2;
+      tmy = (e.clientY / window.innerHeight - 0.5) * 2;
     };
-    const onScroll = () => {
-      sy = window.scrollY;
-    };
+    const onScroll = () => { sy = window.scrollY; };
 
     const loop = () => {
+      // ease toward target — small factor = silky, classy motion
+      mx += (tmx - mx) * 0.06;
+      my += (tmy - my) * 0.06;
+
       const hero = heroRef.current;
       if (hero) {
         const img = hero.querySelector<HTMLElement>("[data-parallax='hero']");
-        if (img) img.style.transform = `translate3d(0, ${sy * 0.22}px, 0) scale(1.06)`;
+        if (img) {
+          const rx = (-my * 1.6).toFixed(3);  // very subtle tilt
+          const ry = (mx * 1.6).toFixed(3);
+          const tx = (mx * 8).toFixed(2);
+          const ty = (sy * 0.18 + my * 6).toFixed(2);
+          img.style.transform =
+            `perspective(1400px) rotateX(${rx}deg) rotateY(${ry}deg) translate3d(${tx}px, ${ty}px, 0) scale(1.08)`;
+        }
       }
       if (leak.current) {
-        leak.current.style.transform = `translate3d(${mx * 22}px, ${my * 16 + sy * 0.08}px, 0)`;
+        leak.current.style.transform = `translate3d(${mx * 14}px, ${my * 10 + sy * 0.05}px, 0)`;
       }
       if (dust.current) {
-        dust.current.style.transform = `translate3d(${mx * -10}px, ${my * -8 + sy * 0.04}px, 0)`;
+        dust.current.style.transform = `translate3d(${mx * -6}px, ${my * -5 + sy * 0.02}px, 0)`;
       }
       raf = requestAnimationFrame(loop);
     };
@@ -50,38 +62,48 @@ export function NaturalParallax({ heroRef }: { heroRef: React.RefObject<HTMLElem
 
   return (
     <>
-      {/* warm sun-leak */}
+      {/* whisper-soft sun-leak — like late afternoon through linen */}
       <div
         ref={leak}
         aria-hidden
         className="pointer-events-none absolute -inset-32 z-[2] will-change-transform"
         style={{
           background:
-            "radial-gradient(40% 35% at 22% 28%, color-mix(in oklab, var(--gold) 45%, transparent), transparent 70%), radial-gradient(35% 30% at 80% 70%, color-mix(in oklab, var(--oxblood) 30%, transparent), transparent 70%)",
+            "radial-gradient(45% 38% at 20% 24%, color-mix(in oklab, var(--gold) 28%, transparent), transparent 72%), radial-gradient(40% 32% at 82% 78%, color-mix(in oklab, var(--oxblood) 18%, transparent), transparent 75%)",
           mixBlendMode: "screen",
-          filter: "blur(40px)",
-          opacity: 0.55,
+          filter: "blur(55px)",
+          opacity: 0.32,
         }}
       />
-      {/* drifting dust grain */}
+      {/* faint film grain — barely there */}
       <div
         ref={dust}
         aria-hidden
         className="pointer-events-none absolute -inset-20 z-[3] will-change-transform"
         style={{
           backgroundImage:
-            "url(\"data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>\")",
+            "url(\"data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>\")",
           mixBlendMode: "soft-light",
-          opacity: 0.35,
+          opacity: 0.18,
         }}
       />
-      {/* vintage vignette */}
+      {/* aged-paper vignette */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 z-[3]"
         style={{
           boxShadow:
-            "inset 0 0 200px 40px color-mix(in oklab, var(--ink) 55%, transparent), inset 0 0 60px 0 color-mix(in oklab, var(--ink) 30%, transparent)",
+            "inset 0 0 240px 60px color-mix(in oklab, var(--ink) 42%, transparent), inset 0 0 80px 0 color-mix(in oklab, var(--ink) 22%, transparent)",
+        }}
+      />
+      {/* warm sepia wash for that vintage taste */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[2]"
+        style={{
+          background:
+            "linear-gradient(180deg, color-mix(in oklab, var(--oxblood) 8%, transparent) 0%, transparent 35%, color-mix(in oklab, var(--gold) 6%, transparent) 100%)",
+          mixBlendMode: "multiply",
         }}
       />
     </>
