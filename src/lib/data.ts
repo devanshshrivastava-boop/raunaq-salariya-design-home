@@ -54,11 +54,33 @@ const formatPrice = (base: number, i: number) => {
   return `₹ ${Math.round(v / 100) * 100}`.replace(/(\d)(?=(\d{3})+$)/g, "$1,");
 };
 
-const makeItems = (titles: string[], imgs: string[], basePrice?: number): ImageItem[] =>
+/** Per-title keyword image. Loremflickr returns a Flickr photograph matching the tags,
+ *  giving every item a unique, visually-relevant image with no API key. The lock seed
+ *  is hashed from the title so the same item always resolves to the same image. */
+const STOP = new Set(["with","and","the","of","in","a","an","to","for","by","on","at","is","or","into","from","over","under","this","that","de","la","le","les","des","du","et","amp"]);
+const SUFFIX = { interior: "interior,design,vintage", store: "antique,vintage,furniture" } as const;
+function keywordsFor(title: string, scope: "interior" | "store"): string {
+  const words = title.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").split(/\s+/)
+    .filter((w) => w && !STOP.has(w) && w.length > 2);
+  const distinct = Array.from(new Set(words)).slice(0, 5).join(",");
+  return `${distinct},${SUFFIX[scope]}`;
+}
+function hashSeed(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
+  return h % 99999;
+}
+function imageFor(title: string, scope: "interior" | "store"): string {
+  const tags = keywordsFor(title, scope);
+  const lock = hashSeed(scope + "::" + title);
+  return `https://loremflickr.com/800/600/${encodeURIComponent(tags)}/all?lock=${lock}`;
+}
+
+const makeItems = (titles: string[], imgs: string[], basePrice?: number, scope: "interior" | "store" = "interior"): ImageItem[] =>
   titles.map((t, i) => ({
     id: `${i}`,
     title: t,
-    image: imgs[i % imgs.length],
+    image: imageFor(t, scope),
     shape: shapeFor(i),
     price: basePrice ? formatPrice(basePrice, i) : undefined,
   }));
