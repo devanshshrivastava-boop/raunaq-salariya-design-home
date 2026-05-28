@@ -28,14 +28,14 @@ export function BouncingTitle({
                 <motion.span
                   key={`${wi}-${ci}`}
                   className="inline-block"
-                  initial={{ y: "0.9em", opacity: 0, rotate: -6 }}
-                  animate={{ y: 0, opacity: 1, rotate: 0 }}
+                  initial={{ y: "0.6em", opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
                   transition={{
-                    delay: delay + i * 0.045,
+                    delay: delay + i * 0.06,
                     type: "spring",
-                    stiffness: 260,
-                    damping: 11,
-                    mass: 0.6,
+                    stiffness: 110,
+                    damping: 14,
+                    mass: 0.9,
                   }}
                 >
                   {c}
