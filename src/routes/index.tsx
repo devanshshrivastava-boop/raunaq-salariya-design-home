@@ -27,11 +27,12 @@ function Home() {
     <div>
       {/* HERO with naturalistic 3D parallax + bouncing letters */}
       <section ref={heroRef} className="relative h-[94vh] min-h-[660px] overflow-hidden">
-        <div data-parallax="hero" className="absolute inset-0 will-change-transform">
+        <div data-parallax="hero" className="absolute inset-0 will-change-transform" style={{ transformStyle: "preserve-3d" }}>
           <img
             src={hero}
             alt="Vintage Indian villa interior at golden hour"
             className="w-full h-full object-cover"
+            style={{ filter: "sepia(0.18) saturate(1.05) contrast(1.04) brightness(0.96)" }}
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--ink)]/30 via-transparent to-[var(--ivory)] z-[2]" />
