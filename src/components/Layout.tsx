@@ -47,6 +47,7 @@ export function Layout() {
             </Link>
             <a href="mailto:studio@rsd.in" className="btn-quote inline-block">Commission</a>
           </div>
+        </div>
       </header>
 
       <main className="relative z-10 flex-1">
