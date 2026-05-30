@@ -56,9 +56,20 @@ export function CollageGrid({ tiles }: { tiles: CollageTile[] }) {
               src={t.image}
               alt={t.title}
               loading="lazy"
-              className="absolute inset-0 w-full h-full object-cover transition-all duration-[1400ms] ease-out group-hover:scale-[1.07] group-hover:[filter:sepia(0.35)_saturate(1.15)_contrast(1.05)]"
+              className={`absolute inset-0 w-full h-full object-cover transition-all duration-[1400ms] ease-out group-hover:scale-[1.07] ${t.hoverImage ? "group-hover:opacity-0" : "group-hover:[filter:sepia(0.35)_saturate(1.15)_contrast(1.05)]"}`}
               style={{ filter: "sepia(0.18) saturate(1.08) contrast(1.04)" }}
             />
+            {t.hoverImage && (
+              <img
+                src={t.hoverImage}
+                alt=""
+                aria-hidden
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-[600ms] ease-out group-hover:scale-[1.07]"
+                style={{ filter: "sepia(0.22) saturate(1.15) contrast(1.05)" }}
+              />
+            )}
+
             <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.85_0.06_70_/_0.08)] via-transparent to-[var(--ink)]/25 pointer-events-none" />
             {/* film grain on tile */}
             <div className="pointer-events-none absolute inset-0 opacity-25 mix-blend-multiply"
