@@ -47,7 +47,7 @@ function StoreCategoryPage() {
         )}
         <div className="gold-divider my-10"><span className="line" /><span className="text-xs tracking-[0.4em] uppercase font-sans">{cat.items.length} Pieces</span><span className="line" /></div>
       </div>
-      <ItemLightboxGrid items={cat.items} categorySlug={cat.slug} categoryName={cat.name} showPrice />
+      <ItemLightboxGrid items={cat.items} categorySlug={cat.slug} categoryName={cat.name} showPrice hoverSwap />
     </section>
   );
 }
