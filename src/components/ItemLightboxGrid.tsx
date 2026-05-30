@@ -39,48 +39,63 @@ export function ItemLightboxGrid({
               transition={{ duration: 0.6, delay: (idx % 6) * 0.05 }}
               className="group"
             >
-              <button
-                onClick={() => setActive(it)}
-                className="block w-full text-left"
-                data-cursor="hover"
-              >
-                <div
-                  className="relative aspect-[4/3] overflow-hidden bg-[var(--cream)] border border-[color-mix(in_oklab,var(--oxblood)_25%,transparent)] transition-transform duration-500 group-hover:scale-[1.02]"
-                  style={{
-                    boxShadow:
-                      "0 1px 0 oklch(1 0 0 / 0.5) inset, 0 18px 36px -22px oklch(0.2 0.02 60 / 0.45)",
-                  }}
-                >
-                  <img
-                    src={it.image}
-                    alt={it.title}
-                    loading="lazy"
-                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[400ms] ease-out ${
-                      hoverSwap && it.hoverImage ? "group-hover:opacity-0" : ""
-                    }`}
-                  />
-                  {hoverSwap && it.hoverImage && (
-                    <img
-                      src={it.hoverImage}
-                      alt=""
-                      aria-hidden
-                      loading="lazy"
-                      className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-[400ms] ease-out"
-                      style={{ filter: "sepia(0.18) saturate(1.1)" }}
-                    />
-                  )}
-                </div>
-                <figcaption className="pt-5">
-                  <div className="text-xs eyebrow">No. {String(idx + 1).padStart(2, "0")}</div>
-                  <h3 className="font-serif text-xl mt-1 leading-snug">{it.title}</h3>
-                  {showPrice && it.price && (
-                    <div className="mt-3 flex items-center gap-3">
-                      <span className="price-chip">{it.price}</span>
-                      <span className="text-xs text-[var(--muted-foreground)] italic">price on request adjustable</span>
+              {(() => {
+                const inner = (
+                  <>
+                    <div
+                      className="relative aspect-[4/3] overflow-hidden bg-[var(--cream)] border border-[color-mix(in_oklab,var(--oxblood)_25%,transparent)] transition-transform duration-500 group-hover:scale-[1.02]"
+                      style={{
+                        boxShadow:
+                          "0 1px 0 oklch(1 0 0 / 0.5) inset, 0 18px 36px -22px oklch(0.2 0.02 60 / 0.45)",
+                      }}
+                    >
+                      <img
+                        src={it.image}
+                        alt={it.title}
+                        loading="lazy"
+                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[400ms] ease-out ${
+                          hoverSwap && it.hoverImage ? "group-hover:opacity-0" : ""
+                        }`}
+                      />
+                      {hoverSwap && it.hoverImage && (
+                        <img
+                          src={it.hoverImage}
+                          alt=""
+                          aria-hidden
+                          loading="lazy"
+                          className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-[400ms] ease-out"
+                          style={{ filter: "sepia(0.18) saturate(1.1)" }}
+                        />
+                      )}
                     </div>
-                  )}
-                </figcaption>
-              </button>
+                    <figcaption className="pt-5">
+                      <div className="text-xs eyebrow">No. {String(idx + 1).padStart(2, "0")}</div>
+                      <h3 className="font-serif text-xl mt-1 leading-snug">{it.title}</h3>
+                      {showPrice && it.price && (
+                        <div className="mt-3 flex items-center gap-3">
+                          <span className="price-chip">{it.price}</span>
+                          <span className="text-xs text-[var(--muted-foreground)] italic">price on request adjustable</span>
+                        </div>
+                      )}
+                    </figcaption>
+                  </>
+                );
+                return linkToVariants ? (
+                  <Link
+                    to="/store/$slug/$itemId"
+                    params={{ slug: categorySlug, itemId: it.id }}
+                    className="block w-full text-left"
+                    data-cursor="hover"
+                  >
+                    {inner}
+                  </Link>
+                ) : (
+                  <button onClick={() => setActive(it)} className="block w-full text-left" data-cursor="hover">
+                    {inner}
+                  </button>
+                );
+              })()}
+
               <div className="mt-4 flex items-center gap-3">
                 <a href="mailto:studio@rsd.in?subject=Quote%20Request" className="btn-quote inline-block">Get Quote</a>
                 {showPrice && (
