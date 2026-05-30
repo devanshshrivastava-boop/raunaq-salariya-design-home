@@ -8,11 +8,14 @@ export function ItemLightboxGrid({
   categorySlug,
   categoryName,
   showPrice,
+  hoverSwap = false,
 }: {
   items: ImageItem[];
   categorySlug: string;
   categoryName: string;
   showPrice?: boolean;
+  /** When true, hovering a card crossfades to `item.hoverImage` (HODCH only). */
+  hoverSwap?: boolean;
 }) {
   const [active, setActive] = useState<ImageItem | null>(null);
   const { toggle, has } = useBookmarks();
@@ -36,15 +39,31 @@ export function ItemLightboxGrid({
                 className="block w-full text-left"
                 data-cursor="hover"
               >
-                <div className="gold-frame overflow-hidden">
-                  <div className="aspect-[4/3] overflow-hidden bg-[var(--cream)]">
+                <div
+                  className="relative aspect-[4/3] overflow-hidden bg-[var(--cream)] border border-[color-mix(in_oklab,var(--oxblood)_25%,transparent)] transition-transform duration-500 group-hover:scale-[1.02]"
+                  style={{
+                    boxShadow:
+                      "0 1px 0 oklch(1 0 0 / 0.5) inset, 0 18px 36px -22px oklch(0.2 0.02 60 / 0.45)",
+                  }}
+                >
+                  <img
+                    src={it.image}
+                    alt={it.title}
+                    loading="lazy"
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-[400ms] ease-out ${
+                      hoverSwap && it.hoverImage ? "group-hover:opacity-0" : ""
+                    }`}
+                  />
+                  {hoverSwap && it.hoverImage && (
                     <img
-                      src={it.image}
-                      alt={it.title}
+                      src={it.hoverImage}
+                      alt=""
+                      aria-hidden
                       loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-110"
+                      className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-[400ms] ease-out"
+                      style={{ filter: "sepia(0.18) saturate(1.1)" }}
                     />
-                  </div>
+                  )}
                 </div>
                 <figcaption className="pt-5">
                   <div className="text-xs eyebrow">No. {String(idx + 1).padStart(2, "0")}</div>
@@ -101,9 +120,7 @@ export function ItemLightboxGrid({
               className="max-w-5xl w-full"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="gold-frame">
-                <img src={active.image} alt={active.title} className="w-full max-h-[78vh] object-contain bg-[var(--ink)]" />
-              </div>
+              <img src={active.image} alt={active.title} className="w-full max-h-[78vh] object-contain bg-[var(--ink)] border border-[var(--gold-soft)]/40" />
               <div className="flex items-end justify-between mt-5 text-[var(--ivory)] gap-6 flex-wrap">
                 <div>
                   <h3 className="font-display text-3xl">{active.title}</h3>
