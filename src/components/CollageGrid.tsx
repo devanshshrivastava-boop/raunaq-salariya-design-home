@@ -19,7 +19,7 @@ export type CollageTile = {
  */
 export function CollageGrid({ tiles }: { tiles: CollageTile[] }) {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-5 md:gap-7 auto-rows-[200px] md:auto-rows-[240px]">
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-5 md:gap-7 auto-rows-[200px] md:auto-rows-[240px]" style={{ gridAutoFlow: "dense" }}>
       {tiles.map((t, i) => {
         const span =
           t.shape === "tall"
