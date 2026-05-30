@@ -30,7 +30,7 @@ export function Layout() {
             <img src={logo} alt="RSD" className="h-12 w-12 object-contain" />
             <div className="leading-none">
               <div className="font-display text-xl tracking-[0.2em]">RSD</div>
-              <div className="text-[10px] tracking-[0.32em] uppercase text-[var(--muted-foreground)] mt-1">Est. Vintage Atelier</div>
+              <div className="text-[10px] tracking-[0.32em] uppercase text-[var(--muted-foreground)] mt-1">Raunaq Salariya Designs</div>
             </div>
           </Link>
           <nav className="hidden md:flex items-center gap-10">

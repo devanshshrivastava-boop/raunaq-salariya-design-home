@@ -15,9 +15,9 @@ export const Route = createFileRoute("/interiors")({
 
 const subNav = [
   { to: "/interiors", label: "Services", exact: true },
-  { to: "/interiors/process", label: "Process" },
-  { to: "/interiors/journal", label: "Journal" },
-];
+  { to: "/interiors/process", label: "Process", exact: false },
+  { to: "/interiors/journal", label: "Journal", exact: false },
+] as const;
 
 function InteriorsLayout() {
   const { pathname } = useLocation();
@@ -29,7 +29,10 @@ function InteriorsLayout() {
           <Link to="/interiors" className="font-display text-2xl tracking-wide">Interio <em className="italic text-[var(--gold)]">Spaces</em></Link>
           <nav className="flex gap-8">
             {subNav.map((n) => {
-              const active = n.exact ? pathname === n.to || pathname.startsWith("/interiors/services") : pathname === n.to;
+              // "Services" is active for /interiors and any /interiors/services/* path
+              const active = n.exact
+                ? pathname === "/interiors" || pathname.startsWith("/interiors/services")
+                : pathname === n.to || pathname.startsWith(n.to + "/");
               return (
                 <Link key={n.to} to={n.to} className="nav-link" data-status={active ? "active" : undefined}>
                   {n.label}
