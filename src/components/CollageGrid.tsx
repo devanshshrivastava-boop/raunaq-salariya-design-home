@@ -6,12 +6,13 @@ export type CollageTile = {
   id: string;
   title: string;
   image: string;
-  /** Aspect: "tall" | "wide" | "square" | "portrait" — controls grid span */
+  hoverImage?: string; // shown on hover (HODCH only)
   shape?: "tall" | "wide" | "square" | "portrait";
   to?: string;
   params?: Record<string, string>;
   caption?: string;
 };
+
 
 /**
  * Aero / Thomas O'Brien-inspired editorial collage:
