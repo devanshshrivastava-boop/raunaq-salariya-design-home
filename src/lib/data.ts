@@ -25,7 +25,8 @@ export type ImageItem = {
   id: string;
   title: string;
   image: string;
-  price?: string;     // formatted INR
+  hoverImage?: string; // alternate image revealed on hover (store only)
+  price?: string;
   shape?: "tall" | "wide" | "square" | "portrait";
 };
 export type Category = {
@@ -40,7 +41,6 @@ export type Category = {
 const interiorPool = [kitchen, bedroom, living, dining, bathroom, foyer, study, wardrobe, balcony, pooja, modernVilla, hotelLobby, pool, villa, hotelFacade];
 const storePool = [sofa, chair, table, chandelier, wall, rug];
 
-/** Deterministic pseudo-random aspect shape based on index — gives the masonry an editorial mix. */
 const shapeFor = (i: number): ImageItem["shape"] => {
   const m = i % 8;
   if (m === 0) return "wide";
@@ -54,36 +54,37 @@ const formatPrice = (base: number, i: number) => {
   return `₹ ${Math.round(v / 100) * 100}`.replace(/(\d)(?=(\d{3})+$)/g, "$1,");
 };
 
-/** Per-title keyword image. Loremflickr returns a Flickr photograph matching the tags,
- *  giving every item a unique, visually-relevant image with no API key. The lock seed
- *  is hashed from the title so the same item always resolves to the same image. */
 const STOP = new Set(["with","and","the","of","in","a","an","to","for","by","on","at","is","or","into","from","over","under","this","that","de","la","le","les","des","du","et","amp"]);
-const SUFFIX = { interior: "interior,design,vintage", store: "antique,vintage,furniture" } as const;
+const SUFFIX = { interior: "interior design", store: "antique vintage" } as const;
 function keywordsFor(title: string, scope: "interior" | "store"): string {
   const words = title.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").split(/\s+/)
     .filter((w) => w && !STOP.has(w) && w.length > 2);
-  const distinct = Array.from(new Set(words)).slice(0, 5).join(",");
-  return `${distinct},${SUFFIX[scope]}`;
+  const distinct = Array.from(new Set(words)).slice(0, 5).join(" ");
+  return `${distinct} ${SUFFIX[scope]}`.trim();
 }
 function hashSeed(s: string): number {
   let h = 2166136261;
   for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
   return h % 99999;
 }
-function imageFor(title: string, scope: "interior" | "store"): string {
-  const tags = keywordsFor(title, scope);
-  const lock = hashSeed(scope + "::" + title);
-  return `https://loremflickr.com/800/600/${encodeURIComponent(tags)}/all?lock=${lock}`;
+/** Source.unsplash returns a relevant photo for the keywords; the `sig` differs per item
+ *  so two items with similar tags still receive different photos. */
+function imageFor(title: string, scope: "interior" | "store", variant = 0): string {
+  const q = encodeURIComponent(keywordsFor(title, scope));
+  const sig = hashSeed(scope + "::" + title + "::" + variant);
+  return `https://source.unsplash.com/featured/800x600/?${q}&sig=${sig}`;
 }
 
 const makeItems = (titles: string[], imgs: string[], basePrice?: number, scope: "interior" | "store" = "interior"): ImageItem[] =>
   titles.map((t, i) => ({
     id: `${i}`,
     title: t,
-    image: imageFor(t, scope),
+    image: imageFor(t, scope, 0),
+    hoverImage: scope === "store" ? imageFor(t, scope, 1) : undefined,
     shape: shapeFor(i),
     price: basePrice ? formatPrice(basePrice, i) : undefined,
   }));
+
 
 // ───────────────────────────────────────────────────────────
 // INTERIOR MODULES (15 modules × 20 directions)
