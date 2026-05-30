@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from "@tanstack/react-router";
 import type { ImageItem } from "@/lib/data";
 import { useBookmarks } from "@/hooks/useBookmarks";
 
@@ -9,6 +10,7 @@ export function ItemLightboxGrid({
   categoryName,
   showPrice,
   hoverSwap = false,
+  linkToVariants = false,
 }: {
   items: ImageItem[];
   categorySlug: string;
@@ -16,7 +18,10 @@ export function ItemLightboxGrid({
   showPrice?: boolean;
   /** When true, hovering a card crossfades to `item.hoverImage` (HODCH only). */
   hoverSwap?: boolean;
+  /** When true, clicking a card navigates to /store/$slug/$itemId instead of opening the modal. */
+  linkToVariants?: boolean;
 }) {
+
   const [active, setActive] = useState<ImageItem | null>(null);
   const { toggle, has } = useBookmarks();
 
