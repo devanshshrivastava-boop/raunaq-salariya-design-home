@@ -67,12 +67,16 @@ function hashSeed(s: string): number {
   for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
   return h % 99999;
 }
-/** Source.unsplash returns a relevant photo for the keywords; the `sig` differs per item
- *  so two items with similar tags still receive different photos. */
+/** Loremflickr returns a deterministic relevant photo for keywords (tag,tag).
+ *  `lock` makes it deterministic per item so each card receives a unique image. */
 function imageFor(title: string, scope: "interior" | "store", variant = 0): string {
-  const q = encodeURIComponent(keywordsFor(title, scope));
-  const sig = hashSeed(scope + "::" + title + "::" + variant);
-  return `https://source.unsplash.com/featured/800x600/?${q}&sig=${sig}`;
+  const tags = keywordsFor(title, scope).split(/\s+/).filter(Boolean).slice(0, 4).join(",");
+  const lock = hashSeed(scope + "::" + title + "::" + variant);
+  return `https://loremflickr.com/800/600/${encodeURIComponent(tags)}?lock=${lock}`;
+}
+/** Public helper so other modules can ask for a unique image given a label. */
+export function imageForLabel(label: string, variant = 0): string {
+  return imageFor(label, "store", variant);
 }
 
 const makeItems = (titles: string[], imgs: string[], basePrice?: number, scope: "interior" | "store" = "interior"): ImageItem[] =>
