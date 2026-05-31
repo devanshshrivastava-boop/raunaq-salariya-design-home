@@ -87,7 +87,7 @@ export function CustomCursor() {
         style={{
           border: "1px solid var(--gold)",
           boxShadow: "0 0 22px -4px color-mix(in oklab, var(--gold) 60%, transparent)",
-          transition: "transform 240ms cubic-bezier(.22,1,.36,1), opacity 220ms ease, border-color 240ms",
+          transition: "opacity 220ms ease, border-color 240ms",
           mixBlendMode: "normal",
         }}
       />
