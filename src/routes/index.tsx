@@ -23,6 +23,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const heroRef = useRef<HTMLElement>(null);
+  const [activeProject, setActiveProject] = useState<typeof featuredProjects[number] | null>(null);
   return (
     <div>
       {/* HERO with naturalistic 3D parallax + bouncing letters */}
