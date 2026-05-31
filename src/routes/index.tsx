@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRef, useState } from "react";
 import hero from "@/assets/hero-home.jpg";
 import founder from "@/assets/founder.png";
 import atelier from "@/assets/atelier.jpg";
-import { featuredProjects, testimonials } from "@/lib/data";
+import { featuredProjects, testimonials, imageForLabel } from "@/lib/data";
 import { BouncingTitle } from "@/components/BouncingTitle";
 import { NaturalParallax } from "@/components/NaturalParallax";
 
@@ -23,6 +23,7 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const heroRef = useRef<HTMLElement>(null);
+  const [activeProject, setActiveProject] = useState<typeof featuredProjects[number] | null>(null);
   return (
     <div>
       {/* HERO with naturalistic 3D parallax + bouncing letters */}
@@ -109,31 +110,131 @@ function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {featuredProjects.map((p, i) => (
-              <motion.article
-                key={p.name}
-                initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: (i % 3) * 0.1 }}
-                className="group"
-              >
-                <div className="gold-frame overflow-hidden">
-                  <div className="aspect-[4/5] overflow-hidden bg-[var(--cream)]">
-                    <img src={p.image} alt={p.name} loading="lazy" className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110" />
-                  </div>
-                </div>
-                <div className="pt-5 flex items-baseline justify-between gap-4">
-                  <div>
-                    <h3 className="font-display text-2xl">{p.name}</h3>
-                    <div className="eyebrow mt-1">{p.type} · {p.location}</div>
-                  </div>
-                  <div className="font-serif italic text-[var(--gold)]">{p.year}</div>
-                </div>
-              </motion.article>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16 pt-6">
+            {featuredProjects.map((p, i) => {
+              const tilt = (((i * 53) % 30) / 10 - 1.5).toFixed(2);
+              return (
+                <motion.article
+                  key={p.name}
+                  initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                  transition={{ duration: 0.8, delay: (i % 3) * 0.1 }}
+                  className="group"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setActiveProject(p)}
+                    className="polaroid-card block w-full text-left"
+                    style={{ transform: `rotate(${tilt}deg)` }}
+                    data-cursor="hover"
+                  >
+                    <span className="polaroid-pin" aria-hidden />
+                    <div className="polaroid-image-frame aspect-[4/5]">
+                      <img
+                        src={p.image}
+                        alt={p.name}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110"
+                      />
+                    </div>
+                    <div className="pt-3 px-1 flex items-baseline justify-between gap-3">
+                      <div>
+                        <h3 className="font-display text-xl leading-tight">{p.name}</h3>
+                        <div className="eyebrow mt-0.5 text-[10px]">{p.type} · {p.location}</div>
+                      </div>
+                      <div className="font-serif italic text-[var(--gold)] text-sm">{p.year}</div>
+                    </div>
+                  </button>
+                </motion.article>
+              );
+            })}
           </div>
         </div>
       </section>
+
+      {/* ARCHIVE MODAL */}
+      <AnimatePresence>
+        {activeProject && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-[9500] flex items-center justify-center p-4 md:p-10"
+            style={{ background: "rgba(10,6,0,0.72)", backdropFilter: "blur(4px)" }}
+            onClick={() => setActiveProject(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.5, ease: [0.34, 1.2, 0.64, 1] }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-5xl w-full max-h-[92vh] overflow-y-auto"
+              style={{ background: "#f5efe6", border: "2px solid #c9a84c" }}
+            >
+              <button
+                aria-label="Close"
+                onClick={() => setActiveProject(null)}
+                className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-2xl z-10"
+                style={{ color: "#c9a84c" }}
+                data-cursor="hover"
+              >
+                ×
+              </button>
+              <img
+                src={activeProject.image}
+                alt={activeProject.name}
+                className="w-full h-[42vh] md:h-[52vh] object-cover"
+              />
+              <div className="p-6 md:p-10">
+                <div className="flex items-end justify-between flex-wrap gap-3">
+                  <h3 className="font-display text-3xl md:text-5xl">{activeProject.name}</h3>
+                  <div className="font-serif italic text-xl" style={{ color: "#c9a84c" }}>{activeProject.year}</div>
+                </div>
+                <div className="mt-6" style={{ height: 1, background: "#c9a84c" }} />
+                <div className="grid grid-cols-3 gap-6 mt-6">
+                  {[
+                    ["Type", activeProject.type],
+                    ["Location", activeProject.location],
+                    ["Area", "Confidential"],
+                  ].map(([k, v]) => (
+                    <div key={k}>
+                      <div className="text-[10px] tracking-[0.3em] uppercase" style={{ color: "#c9a84c" }}>{k}</div>
+                      <div className="font-serif text-base mt-1 text-[var(--ink)]">{v}</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-8">
+                  <div className="text-[10px] tracking-[0.3em] uppercase mb-3" style={{ color: "#c9a84c" }}>About the Project</div>
+                  <p className="font-serif text-[var(--ink)]/85 leading-relaxed">
+                    A {activeProject.type.toLowerCase()} commission in {activeProject.location}, completed in {activeProject.year}.
+                    The studio led every phase — from the early concept sketches through joinery, marble selection, lighting
+                    and final styling — building the room around the family's rituals, light, and the long view of the city.
+                  </p>
+                </div>
+                <div className="mt-8 flex gap-3 overflow-x-auto pb-2">
+                  {[0, 1, 2, 3].map((n) => (
+                    <img
+                      key={n}
+                      src={imageForLabel(`${activeProject.name} detail ${n}`, n + 1)}
+                      alt=""
+                      className="h-28 md:h-36 w-auto object-cover flex-shrink-0"
+                      style={{ border: "1.5px solid #c9a84c" }}
+                    />
+                  ))}
+                </div>
+                <a
+                  href="mailto:studio@rsd.in?subject=Begin%20a%20Commission"
+                  className="block text-center mt-10 py-4 font-sans text-xs tracking-[0.35em] uppercase transition-colors duration-300"
+                  style={{ border: "1.5px solid #c9a84c", color: "#8b6508", background: "transparent" }}
+                  onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#c9a84c"; (e.currentTarget as HTMLElement).style.color = "#fffaf2"; }}
+                  onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "transparent"; (e.currentTarget as HTMLElement).style.color = "#8b6508"; }}
+                >
+                  Begin a Commission →
+                </a>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* TESTIMONIALS */}
       <section className="max-w-5xl mx-auto px-6 lg:px-12 py-32 text-center">

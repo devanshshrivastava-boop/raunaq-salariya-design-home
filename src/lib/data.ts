@@ -67,12 +67,16 @@ function hashSeed(s: string): number {
   for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
   return h % 99999;
 }
-/** Source.unsplash returns a relevant photo for the keywords; the `sig` differs per item
- *  so two items with similar tags still receive different photos. */
+/** Loremflickr returns a deterministic relevant photo for keywords (tag,tag).
+ *  `lock` makes it deterministic per item so each card receives a unique image. */
 function imageFor(title: string, scope: "interior" | "store", variant = 0): string {
-  const q = encodeURIComponent(keywordsFor(title, scope));
-  const sig = hashSeed(scope + "::" + title + "::" + variant);
-  return `https://source.unsplash.com/featured/800x600/?${q}&sig=${sig}`;
+  const tags = keywordsFor(title, scope).split(/\s+/).filter(Boolean).slice(0, 4).join(",");
+  const lock = hashSeed(scope + "::" + title + "::" + variant);
+  return `https://loremflickr.com/800/600/${encodeURIComponent(tags)}?lock=${lock}`;
+}
+/** Public helper so other modules can ask for a unique image given a label. */
+export function imageForLabel(label: string, variant = 0): string {
+  return imageFor(label, "store", variant);
 }
 
 const makeItems = (titles: string[], imgs: string[], basePrice?: number, scope: "interior" | "store" = "interior"): ImageItem[] =>
@@ -481,46 +485,46 @@ const storeBaseCount = 30;
 const titlesFor = (arr: string[]) => arr.slice(0, storeBaseCount);
 
 export const storeCategories: Category[] = [
-  { slug: "sofas", name: "Sofas", tagline: "Heritage seating, modern comfort", image: sofa,
+  { slug: "sofas", name: "Sofas", tagline: "Heritage seating, modern comfort", image: imageFor("Sofas Velvet Chesterfield Heritage", "store", 99),
     description: "Camelback velvets, oxblood Chesterfields, walnut and cane benches — sofas built by hand by craftsmen we've worked with for years.",
     items: makeItems(titlesFor(sofaTitles), [sofa, chair], 85000, "store") },
-  { slug: "chairs", name: "Chairs", tagline: "Accent chairs & lounges", image: chair,
+  { slug: "chairs", name: "Chairs", tagline: "Accent chairs & lounges", image: imageFor("Vintage Wingback Armchair Lounge", "store", 99),
     description: "From a velvet tub chair to a carved peacock throne — every chair in the collection is a piece of architecture you can move.",
     items: makeItems(titlesFor(chairTitles), [chair, sofa], 22000, "store") },
-  { slug: "tables", name: "Tables", tagline: "Dining, side, console — every kind", image: table,
+  { slug: "tables", name: "Tables", tagline: "Dining, side, console — every kind", image: imageFor("Antique Walnut Dining Table", "store", 99),
     description: "Walnut marquetry, carved marble, brass-trim — tables in every scale, sourced from heritage workshops across India and Europe.",
     items: makeItems(titlesFor(tableTitles), [table], 38000, "store") },
-  { slug: "chandeliers", name: "Chandeliers", tagline: "Light as architecture", image: chandelier,
+  { slug: "chandeliers", name: "Chandeliers", tagline: "Light as architecture", image: imageFor("Crystal Chandelier Vintage Brass", "store", 99),
     description: "Murano crystal, hand-forged iron, rock crystal, and Mughal brass — chandeliers chosen one room at a time.",
     items: makeItems(titlesFor(chandelierTitles), [chandelier], 145000, "store") },
-  { slug: "wall", name: "Wall Hangings", tagline: "Gilded mirrors & framed art", image: wall,
+  { slug: "wall", name: "Wall Hangings", tagline: "Gilded mirrors & framed art", image: imageFor("Wall Tapestry Vintage Hanging", "store", 99),
     description: "Venetian mirrors, carved wood brackets, hand-painted tile panels — the wall is the most underused canvas in the home.",
     items: makeItems(titlesFor(wallTitles), [wall], 18000, "store") },
-  { slug: "rugs", name: "Rugs", tagline: "Hand-knotted floor stories", image: rug,
+  { slug: "rugs", name: "Rugs", tagline: "Hand-knotted floor stories", image: imageFor("Persian Carpet Knotted Rug", "store", 99),
     description: "Persian Tabriz, Kashmir silk, Tibetan wool, cotton dhurries — every rug is hand-knotted by master weavers.",
     items: makeItems(titlesFor(rugTitles), [rug], 65000, "store") },
-  { slug: "clocks", name: "Clocks", tagline: "Time, well kept", image: chandelier,
+  { slug: "clocks", name: "Clocks", tagline: "Time, well kept", image: imageFor("Antique Mantel Clock Vintage", "store", 99),
     description: "Long-case clocks, brass mantel clocks, vintage carriage clocks — instruments that mark time with grace.",
     items: makeItems(titlesFor(clockTitles), [chandelier, wall], 24000, "store") },
-  { slug: "marbles", name: "Marbles", tagline: "The bones of the heritage home", image: bathroom,
+  { slug: "marbles", name: "Marbles", tagline: "The bones of the heritage home", image: imageFor("Marble Slab Stone Carrara", "store", 99),
     description: "Italian Carrara, Indian Makrana, Verde, Onyx, Calacatta — marble slabs sourced direct from quarries and our trusted yards.",
     items: makeItems(titlesFor(marbleTitles), [bathroom, wall], 9500, "store") },
-  { slug: "mirrors", name: "Mirrors", tagline: "Reflection, framed", image: wall,
+  { slug: "mirrors", name: "Mirrors", tagline: "Reflection, framed", image: imageFor("Vintage Gilded Mirror Frame", "store", 99),
     description: "Venetian, Mughal, Carved wood and gilded — mirrors that frame a room, not just a face.",
     items: makeItems(titlesFor(mirrorTitles), [wall, chair], 28000, "store") },
-  { slug: "vases", name: "Vases & Urns", tagline: "Vessels for flowers and quiet", image: chandelier,
+  { slug: "vases", name: "Vases & Urns", tagline: "Vessels for flowers and quiet", image: imageFor("Ceramic Vase Porcelain Urn", "store", 99),
     description: "Hand-thrown stoneware, hammered brass, carved marble, Persian blue porcelain.",
     items: makeItems(titlesFor(vaseTitles), [chandelier, wall], 7500, "store") },
-  { slug: "lamps", name: "Lamps", tagline: "Table, floor, wall", image: chandelier,
+  { slug: "lamps", name: "Lamps", tagline: "Table, floor, wall", image: imageFor("Vintage Brass Table Lamp", "store", 99),
     description: "Banker's lamps, tripod floor lamps, carved marble bases — every lamp earns the surface it sits on.",
     items: makeItems(titlesFor(lampTitles), [chandelier], 18500, "store") },
-  { slug: "art", name: "Art", tagline: "Botanicals, miniatures, photography", image: wall,
+  { slug: "art", name: "Art", tagline: "Botanicals, miniatures, photography", image: imageFor("Botanical Painting Vintage Art", "store", 99),
     description: "Rajasthani miniatures, Tanjore paintings, vintage botanicals, contemporary cyanotypes.",
     items: makeItems(titlesFor(artTitles), [wall, foyer], 32000, "store") },
-  { slug: "textiles", name: "Textiles", tagline: "Cushions, throws, curtains", image: rug,
+  { slug: "textiles", name: "Textiles", tagline: "Cushions, throws, curtains", image: imageFor("Embroidered Cushion Throw Textile", "store", 99),
     description: "Hand-block printed cottons, Kashmir pashmina, Banarasi silks, vintage kantha — the soft language of the room.",
     items: makeItems(titlesFor(textileTitles), [rug, wall], 6800, "store") },
-  { slug: "books", name: "Books", tagline: "The library, edited", image: study,
+  { slug: "books", name: "Books", tagline: "The library, edited", image: imageFor("Vintage Leather Books Library", "store", 99),
     description: "Curated rare editions and modern monographs — interiors, architecture, photography, food, and the long Indian shelf.",
     items: makeItems(titlesFor(bookTitles), [study, wall], 3800, "store") },
 ];

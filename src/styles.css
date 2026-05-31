@@ -222,3 +222,32 @@
 }
 .bookmark-btn:hover { border-color: var(--gold); color: var(--oxblood); }
 .bookmark-btn.is-on { background: var(--oxblood); color: var(--ivory); border-color: var(--oxblood); }
+
+/* Hodch fancy card hover effects */
+@keyframes rsd-shimmer {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(120%);  }
+}
+
+/* Polaroid Archive card */
+.polaroid-card {
+  background: #fffaf2;
+  padding: 10px 10px 48px;
+  box-shadow: 3px 5px 20px rgba(0,0,0,0.16);
+  position: relative;
+  transition: transform 450ms cubic-bezier(.22,1,.36,1), box-shadow 450ms ease;
+}
+.polaroid-card:hover {
+  transform: translateY(-4px) rotate(0deg);
+  box-shadow: 4px 10px 28px rgba(0,0,0,0.22);
+}
+.polaroid-card .polaroid-image-frame {
+  border: 2px solid #c9a84c;
+  overflow: hidden;
+}
+.polaroid-card .polaroid-pin {
+  width: 15px; height: 15px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 35%, #ffe57a, #b8860b);
+  position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.35);
+}
