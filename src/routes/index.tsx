@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { useRef } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRef, useState } from "react";
 import hero from "@/assets/hero-home.jpg";
 import founder from "@/assets/founder.png";
 import atelier from "@/assets/atelier.jpg";
-import { featuredProjects, testimonials } from "@/lib/data";
+import { featuredProjects, testimonials, imageForLabel } from "@/lib/data";
 import { BouncingTitle } from "@/components/BouncingTitle";
 import { NaturalParallax } from "@/components/NaturalParallax";
 
