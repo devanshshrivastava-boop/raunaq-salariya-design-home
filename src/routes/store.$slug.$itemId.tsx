@@ -2,6 +2,28 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { storeCategories } from "@/lib/data";
 
+// Eagerly grab every variety / hover image the user has dropped into
+// src/assets/hodch/<slug>/{variety-XX.jpg,hover-XX.jpg}. The user can replace
+// these files at will; Vite picks them up at build time.
+const varietyAssets = import.meta.glob("@/assets/hodch/*/variety-*.{jpg,jpeg,png,webp}", {
+  eager: true,
+  query: "?url",
+  import: "default",
+}) as Record<string, string>;
+const hoverAssets = import.meta.glob("@/assets/hodch/*/hover-*.{jpg,jpeg,png,webp}", {
+  eager: true,
+  query: "?url",
+  import: "default",
+}) as Record<string, string>;
+
+function pickFor(slug: string, kind: "variety" | "hover"): string[] {
+  const bag = kind === "variety" ? varietyAssets : hoverAssets;
+  return Object.entries(bag)
+    .filter(([p]) => p.includes(`/hodch/${slug}/`))
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, url]) => url);
+}
+
 export const Route = createFileRoute("/store/$slug/$itemId")({
   head: ({ params }) => {
     const cat = storeCategories.find((c) => c.slug === params.slug);
@@ -36,14 +58,28 @@ export const Route = createFileRoute("/store/$slug/$itemId")({
   ),
 });
 
+const finishes = [
+  "Studio Edit", "Atelier Alt", "Heritage Patina", "Brass Inlay", "Walnut Trim",
+  "Carrara Marble", "Oxblood Velvet", "Ivory Linen", "Verde Marble", "Hand-Painted",
+];
+
 function ProductVariantsPage() {
   const { cat, item } = Route.useLoaderData();
 
-  // Two varieties of this piece — primary + hover/alternate variant.
-  const variants = [
-    { id: "v1", label: "Variant I — Studio Edit", image: item.image, blurb: "The studio's primary edit — the one most commissioned, in the most asked-after finish." },
-    { id: "v2", label: "Variant II — Atelier Alt", image: item.hoverImage ?? item.image, blurb: "A second material direction — an alternate colourway or finish, available on request." },
-  ];
+  const varieties = pickFor(cat.slug, "variety");
+  const hovers = pickFor(cat.slug, "hover");
+
+  // Always render 10 variant cards. Fall back to the product's own image if
+  // the user hasn't yet dropped JPGs into the folder.
+  const variants = Array.from({ length: 10 }).map((_, i) => ({
+    id: `v-${i + 1}`,
+    label: `Variant ${String(i + 1).padStart(2, "0")} — ${finishes[i % finishes.length]}`,
+    image: varieties[i] ?? item.image,
+    hover: hovers[i] ?? item.hoverImage ?? item.image,
+    blurb: i % 2
+      ? "An alternate material direction — available on commission, calibrated to your room."
+      : "The studio's primary edit — the finish most often asked for in this collection.",
+  }));
 
   return (
     <section className="max-w-7xl mx-auto px-6 lg:px-12 py-20">
@@ -66,43 +102,58 @@ function ProductVariantsPage() {
         )}
         <div className="gold-divider my-10">
           <span className="line" />
-          <span className="text-xs tracking-[0.4em] uppercase font-sans">Two Varieties</span>
+          <span className="text-xs tracking-[0.4em] uppercase font-sans">Ten Varieties</span>
           <span className="line" />
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
         {variants.map((v, i) => (
           <motion.figure
             key={v.id}
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.7, delay: i * 0.1 }}
+            transition={{ duration: 0.55, delay: (i % 6) * 0.05 }}
             className="group"
           >
             <div
               className="relative aspect-[4/5] overflow-hidden bg-[var(--cream)] border border-[color-mix(in_oklab,var(--oxblood)_25%,transparent)] transition-transform duration-500 group-hover:scale-[1.02]"
               style={{
-                boxShadow:
-                  "0 1px 0 oklch(1 0 0 / 0.5) inset, 0 22px 44px -22px oklch(0.2 0.02 60 / 0.5)",
+                boxShadow: "0 1px 0 oklch(1 0 0 / 0.5) inset, 0 22px 44px -22px oklch(0.2 0.02 60 / 0.5)",
               }}
+              data-cursor="hover"
             >
               <img
                 src={v.image}
                 alt={`${item.title} — ${v.label}`}
                 loading="lazy"
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]"
-                style={{ filter: "sepia(0.16) saturate(1.08) contrast(1.04)" }}
+                className="absolute inset-0 w-full h-full object-cover transition-opacity duration-[450ms] ease-out group-hover:opacity-0"
+                style={{ filter: "sepia(0.14) saturate(1.06) contrast(1.03)" }}
               />
+              <img
+                src={v.hover}
+                alt=""
+                aria-hidden
+                loading="lazy"
+                className="absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-[450ms] ease-out"
+                style={{ filter: "sepia(0.16) saturate(1.15) brightness(1.04)" }}
+              />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute left-0 right-0 bottom-0 px-4 py-3 opacity-0 translate-y-[10px] group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-out"
+                style={{ background: "linear-gradient(to top, rgba(20,12,4,0.78), transparent)", color: "var(--ivory)" }}
+              >
+                <div className="font-display text-lg leading-tight">{v.label}</div>
+              </div>
             </div>
             <figcaption className="pt-5">
               <div className="eyebrow">No. {String(i + 1).padStart(2, "0")}</div>
-              <h3 className="font-display text-3xl mt-1">{v.label}</h3>
-              <p className="font-serif italic text-[var(--muted-foreground)] mt-2 max-w-md">{v.blurb}</p>
+              <h3 className="font-display text-2xl mt-1">{v.label}</h3>
+              <p className="font-serif italic text-sm text-[var(--muted-foreground)] mt-2 max-w-md">{v.blurb}</p>
               <a
                 href={`mailto:studio@rsd.in?subject=Quote%20Request%20-%20${encodeURIComponent(item.title + " - " + v.label)}`}
-                className="btn-quote inline-block mt-5"
+                className="btn-quote inline-block mt-4"
               >
                 Get Quote
               </a>
