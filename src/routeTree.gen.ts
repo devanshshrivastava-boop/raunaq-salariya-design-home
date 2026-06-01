@@ -17,6 +17,7 @@ import { Route as InteriorsIndexRouteImport } from './routes/interiors.index'
 import { Route as StoreSlugRouteImport } from './routes/store.$slug'
 import { Route as InteriorsProcessRouteImport } from './routes/interiors.process'
 import { Route as InteriorsJournalRouteImport } from './routes/interiors.journal'
+import { Route as StoreSlugIndexRouteImport } from './routes/store.$slug.index'
 import { Route as StoreSlugItemIdRouteImport } from './routes/store.$slug.$itemId'
 import { Route as InteriorsServicesSlugRouteImport } from './routes/interiors.services.$slug'
 
@@ -60,6 +61,11 @@ const InteriorsJournalRoute = InteriorsJournalRouteImport.update({
   path: '/journal',
   getParentRoute: () => InteriorsRoute,
 } as any)
+const StoreSlugIndexRoute = StoreSlugIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => StoreSlugRoute,
+} as any)
 const StoreSlugItemIdRoute = StoreSlugItemIdRouteImport.update({
   id: '/$itemId',
   path: '/$itemId',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/interiors/': typeof InteriorsIndexRoute
   '/interiors/services/$slug': typeof InteriorsServicesSlugRoute
   '/store/$slug/$itemId': typeof StoreSlugItemIdRoute
+  '/store/$slug/': typeof StoreSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -89,10 +96,10 @@ export interface FileRoutesByTo {
   '/store': typeof StoreRouteWithChildren
   '/interiors/journal': typeof InteriorsJournalRoute
   '/interiors/process': typeof InteriorsProcessRoute
-  '/store/$slug': typeof StoreSlugRouteWithChildren
   '/interiors': typeof InteriorsIndexRoute
   '/interiors/services/$slug': typeof InteriorsServicesSlugRoute
   '/store/$slug/$itemId': typeof StoreSlugItemIdRoute
+  '/store/$slug': typeof StoreSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -106,6 +113,7 @@ export interface FileRoutesById {
   '/interiors/': typeof InteriorsIndexRoute
   '/interiors/services/$slug': typeof InteriorsServicesSlugRoute
   '/store/$slug/$itemId': typeof StoreSlugItemIdRoute
+  '/store/$slug/': typeof StoreSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -120,6 +128,7 @@ export interface FileRouteTypes {
     | '/interiors/'
     | '/interiors/services/$slug'
     | '/store/$slug/$itemId'
+    | '/store/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -127,10 +136,10 @@ export interface FileRouteTypes {
     | '/store'
     | '/interiors/journal'
     | '/interiors/process'
-    | '/store/$slug'
     | '/interiors'
     | '/interiors/services/$slug'
     | '/store/$slug/$itemId'
+    | '/store/$slug'
   id:
     | '__root__'
     | '/'
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/interiors/'
     | '/interiors/services/$slug'
     | '/store/$slug/$itemId'
+    | '/store/$slug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -210,6 +220,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InteriorsJournalRouteImport
       parentRoute: typeof InteriorsRoute
     }
+    '/store/$slug/': {
+      id: '/store/$slug/'
+      path: '/'
+      fullPath: '/store/$slug/'
+      preLoaderRoute: typeof StoreSlugIndexRouteImport
+      parentRoute: typeof StoreSlugRoute
+    }
     '/store/$slug/$itemId': {
       id: '/store/$slug/$itemId'
       path: '/$itemId'
@@ -247,10 +264,12 @@ const InteriorsRouteWithChildren = InteriorsRoute._addFileChildren(
 
 interface StoreSlugRouteChildren {
   StoreSlugItemIdRoute: typeof StoreSlugItemIdRoute
+  StoreSlugIndexRoute: typeof StoreSlugIndexRoute
 }
 
 const StoreSlugRouteChildren: StoreSlugRouteChildren = {
   StoreSlugItemIdRoute: StoreSlugItemIdRoute,
+  StoreSlugIndexRoute: StoreSlugIndexRoute,
 }
 
 const StoreSlugRouteWithChildren = StoreSlugRoute._addFileChildren(
