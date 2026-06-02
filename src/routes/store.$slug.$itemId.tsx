@@ -68,8 +68,8 @@ function ProductVariantsPage() {
   const variants = Array.from({ length: 10 }).map((_, i) => ({
     id: `v-${i + 1}`,
     label: `Variant ${String(i + 1).padStart(2, "0")} — ${finishes[i % finishes.length]}`,
-    image: varieties[i] ?? item.image,
-    hover: hovers[i] ?? item.hoverImage ?? item.image,
+    image: pool[i] ?? item.image,
+    hover: pool[(i + 1) % Math.max(pool.length, 1)] ?? item.hoverImage ?? item.image,
     blurb: i % 2
       ? "An alternate material direction — available on commission, calibrated to your room."
       : "The studio's primary edit — the finish most often asked for in this collection.",
