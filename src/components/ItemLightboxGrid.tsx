@@ -44,6 +44,7 @@ export function ItemLightboxGrid({
               hoverSwap={hoverSwap}
               linkToVariants={linkToVariants}
               categorySlug={categorySlug}
+              variantsBase={variantsBase}
               showPrice={showPrice}
               onActivate={() => setActive(it)}
               saved={saved}
