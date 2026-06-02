@@ -1,25 +1,27 @@
-import kitchen from "@/assets/cat-kitchen.jpg";
-import bathroom from "@/assets/cat-bathroom.jpg";
-import pooja from "@/assets/cat-pooja.jpg";
-import balcony from "@/assets/cat-balcony.jpg";
-import dining from "@/assets/cat-dining.jpg";
-import study from "@/assets/cat-study.jpg";
-import wardrobe from "@/assets/cat-wardrobe.jpg";
-import bedroom from "@/assets/work-bedroom.png";
-import living from "@/assets/work-living.png";
-import foyer from "@/assets/work-foyer.png";
-import pool from "@/assets/work-pool.png";
-import villa from "@/assets/work-villa-exterior.png";
-import modernVilla from "@/assets/work-modern-villa.png";
-import hotelLobby from "@/assets/work-hotel-lobby.png";
-import hotelFacade from "@/assets/work-hotel-facade.png";
+// Local category card images — the user manages these JPGs themselves under
+// src/assets/interio/<slug>/card.jpg and src/assets/hodch/<slug>/card.jpg.
+import kitchen from "@/assets/interio/kitchen/card.jpg";
+import bathroom from "@/assets/interio/bathroom/card.jpg";
+import pooja from "@/assets/interio/pooja/card.jpg";
+import balcony from "@/assets/interio/balcony/card.jpg";
+import dining from "@/assets/interio/dining/card.jpg";
+import study from "@/assets/interio/study/card.jpg";
+import wardrobe from "@/assets/interio/wardrobe/card.jpg";
+import bedroom from "@/assets/interio/bedroom/card.jpg";
+import living from "@/assets/interio/living/card.jpg";
+import foyer from "@/assets/interio/entryway/card.jpg";
+import pool from "@/assets/interio/spa/card.jpg";
+import villa from "@/assets/interio/terrace/card.jpg";
+import modernVilla from "@/assets/interio/garden/card.jpg";
+import hotelLobby from "@/assets/interio/hotel-lobby/card.jpg";
+import hotelFacade from "@/assets/interio/party-hall/card.jpg";
 
-import sofa from "@/assets/store-sofa.jpg";
-import chair from "@/assets/store-chair.jpg";
-import table from "@/assets/store-table.jpg";
-import chandelier from "@/assets/store-chandelier.jpg";
-import wall from "@/assets/store-wall.jpg";
-import rug from "@/assets/store-rug.jpg";
+import sofa from "@/assets/hodch/sofas/card.jpg";
+import chair from "@/assets/hodch/chairs/card.jpg";
+import table from "@/assets/hodch/tables/card.jpg";
+import chandelier from "@/assets/hodch/chandeliers/card.jpg";
+import wall from "@/assets/hodch/wall/card.jpg";
+import rug from "@/assets/hodch/rugs/card.jpg";
 
 export type ImageItem = {
   id: string;
