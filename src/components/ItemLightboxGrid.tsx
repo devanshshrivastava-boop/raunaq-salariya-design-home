@@ -240,14 +240,25 @@ function FancyCard({
       className="group"
     >
       {linkToVariants ? (
-        <Link
-          to="/store/$slug/$itemId"
-          params={{ slug: categorySlug, itemId: item.id }}
-          className="block w-full text-left"
-          data-cursor="hover"
-        >
-          {cardInner}
-        </Link>
+        variantsBase === "interiors" ? (
+          <Link
+            to="/interiors/services/$slug/$itemId"
+            params={{ slug: categorySlug, itemId: item.id }}
+            className="block w-full text-left"
+            data-cursor="hover"
+          >
+            {cardInner}
+          </Link>
+        ) : (
+          <Link
+            to="/store/$slug/$itemId"
+            params={{ slug: categorySlug, itemId: item.id }}
+            className="block w-full text-left"
+            data-cursor="hover"
+          >
+            {cardInner}
+          </Link>
+        )
       ) : (
         <button onClick={onActivate} className="block w-full text-left" data-cursor="hover">
           {cardInner}
