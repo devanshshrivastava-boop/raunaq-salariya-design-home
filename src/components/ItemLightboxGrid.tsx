@@ -12,6 +12,7 @@ export function ItemLightboxGrid({
   hoverSwap = false,
   linkToVariants = false,
   fancy = false,
+  variantsBase = "store",
 }: {
   items: ImageItem[];
   categorySlug: string;
@@ -19,10 +20,12 @@ export function ItemLightboxGrid({
   showPrice?: boolean;
   /** When true, hovering a card crossfades to `item.hoverImage` (HODCH only). */
   hoverSwap?: boolean;
-  /** When true, clicking a card navigates to /store/$slug/$itemId instead of opening the modal. */
+  /** When true, clicking a card navigates to the variants page instead of opening the modal. */
   linkToVariants?: boolean;
   /** Enables 3D tilt, shimmer sweep, scale-up, saturation boost, sliding label. */
   fancy?: boolean;
+  /** Which variants route to navigate to when linkToVariants is true. */
+  variantsBase?: "store" | "interiors";
 }) {
   const [active, setActive] = useState<ImageItem | null>(null);
   const { toggle, has } = useBookmarks();
