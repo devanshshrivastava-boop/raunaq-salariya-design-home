@@ -2,25 +2,19 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { storeCategories } from "@/lib/data";
 
-// Eagerly grab every variety / hover image the user has dropped into
-// src/assets/hodch/<slug>/{variety-XX.jpg,hover-XX.jpg}. The user can replace
-// these files at will; Vite picks them up at build time.
-const varietyAssets = import.meta.glob("@/assets/hodch/*/variety-*.{jpg,jpeg,png,webp}", {
-  eager: true,
-  query: "?url",
-  import: "default",
-}) as Record<string, string>;
-const hoverAssets = import.meta.glob("@/assets/hodch/*/hover-*.{jpg,jpeg,png,webp}", {
+// Eagerly grab every image the user has dropped into
+// src/assets/hodch/<slug>/ (any naming convention, e.g. art-1.jpg, book-1.jpg).
+// `card.jpg` is excluded — it's reserved for the category cover.
+const hodchAssets = import.meta.glob("@/assets/hodch/*/*.{jpg,jpeg,png,webp}", {
   eager: true,
   query: "?url",
   import: "default",
 }) as Record<string, string>;
 
-function pickFor(slug: string, kind: "variety" | "hover"): string[] {
-  const bag = kind === "variety" ? varietyAssets : hoverAssets;
-  return Object.entries(bag)
-    .filter(([p]) => p.includes(`/hodch/${slug}/`))
-    .sort(([a], [b]) => a.localeCompare(b))
+function pickFor(slug: string): string[] {
+  return Object.entries(hodchAssets)
+    .filter(([p]) => p.includes(`/hodch/${slug}/`) && !p.endsWith("/card.jpg"))
+    .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
     .map(([, url]) => url);
 }
 
