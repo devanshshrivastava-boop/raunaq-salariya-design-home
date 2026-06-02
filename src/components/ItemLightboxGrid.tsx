@@ -102,6 +102,7 @@ function FancyCard({
   hoverSwap,
   linkToVariants,
   categorySlug,
+  variantsBase = "store",
   showPrice,
   onActivate,
   saved,
@@ -113,6 +114,7 @@ function FancyCard({
   hoverSwap: boolean;
   linkToVariants: boolean;
   categorySlug: string;
+  variantsBase?: "store" | "interiors";
   showPrice?: boolean;
   onActivate: () => void;
   saved: boolean;
