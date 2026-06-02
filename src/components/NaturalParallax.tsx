@@ -60,6 +60,16 @@ export function NaturalParallax({ heroRef }: { heroRef: React.RefObject<HTMLElem
     };
   }, [heroRef]);
 
+  // pre-compute a stable scatter of glitter motes
+  const motes = Array.from({ length: 26 }).map((_, i) => ({
+    left: (i * 37 + 13) % 100,
+    delay: ((i * 1.37) % 12).toFixed(2),
+    dur: (10 + ((i * 2.3) % 8)).toFixed(2),
+    size: 1 + ((i * 7) % 3),
+    drift: ((i * 11) % 30) - 15,
+    op: 0.18 + ((i * 13) % 22) / 100,
+  }));
+
   return (
     <>
       {/* whisper-soft sun-leak — like late afternoon through linen */}
@@ -106,6 +116,25 @@ export function NaturalParallax({ heroRef }: { heroRef: React.RefObject<HTMLElem
           mixBlendMode: "multiply",
         }}
       />
+      {/* subtle falling gold glitter — like dust caught in late sun */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-[4] overflow-hidden">
+        {motes.map((m, i) => (
+          <span
+            key={i}
+            className="rsd-mote"
+            style={{
+              left: `${m.left}%`,
+              top: "-10%",
+              width: `${m.size}px`,
+              height: `${m.size}px`,
+              opacity: m.op,
+              animationDelay: `${m.delay}s`,
+              animationDuration: `${m.dur}s`,
+              ["--drift" as never]: `${m.drift}px`,
+            }}
+          />
+        ))}
+      </div>
     </>
   );
 }
