@@ -60,8 +60,8 @@ const finishes = [
 function ProductVariantsPage() {
   const { cat, item } = Route.useLoaderData();
 
-  const varieties = pickFor(cat.slug, "variety");
-  const hovers = pickFor(cat.slug, "hover");
+  const pool = pickFor(cat.slug);
+  // Use the pool for both base and hover (offset by 1 for hover swap variety).
 
   // Always render 10 variant cards. Fall back to the product's own image if
   // the user hasn't yet dropped JPGs into the folder.
