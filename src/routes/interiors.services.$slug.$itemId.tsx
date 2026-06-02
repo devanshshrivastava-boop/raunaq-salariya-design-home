@@ -1,84 +1,74 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { storeCategories } from "@/lib/data";
+import { interiorCategories } from "@/lib/data";
 
 // Eagerly grab every image the user has dropped into
-// src/assets/hodch/<slug>/ (any naming convention, e.g. art-1.jpg, book-1.jpg).
+// src/assets/interio/<slug>/ (any naming convention, e.g. living-1.jpg).
 // `card.jpg` is excluded — it's reserved for the category cover.
-const hodchAssets = import.meta.glob("@/assets/hodch/*/*.{jpg,jpeg,png,webp}", {
+const interioAssets = import.meta.glob("@/assets/interio/*/*.{jpg,jpeg,png,webp}", {
   eager: true,
   query: "?url",
   import: "default",
 }) as Record<string, string>;
 
 function pickFor(slug: string): string[] {
-  return Object.entries(hodchAssets)
-    .filter(([p]) => p.includes(`/hodch/${slug}/`) && !p.endsWith("/card.jpg"))
+  return Object.entries(interioAssets)
+    .filter(([p]) => p.includes(`/interio/${slug}/`) && !p.endsWith("/card.jpg"))
     .sort(([a], [b]) => a.localeCompare(b, undefined, { numeric: true }))
     .map(([, url]) => url);
 }
 
-export const Route = createFileRoute("/store/$slug/$itemId")({
+export const Route = createFileRoute("/interiors/services/$slug/$itemId")({
   head: ({ params }) => {
-    const cat = storeCategories.find((c) => c.slug === params.slug);
+    const cat = interiorCategories.find((c) => c.slug === params.slug);
     const item = cat?.items.find((it) => it.id === params.itemId);
     return {
       meta: [
-        { title: `${item?.title ?? "Piece"} — ${cat?.name ?? "Hodch Store"}` },
-        { name: "description", content: item?.title ?? "Hodch Store piece" },
+        { title: `${item?.title ?? "Direction"} — ${cat?.name ?? "Interio Spaces"}` },
+        { name: "description", content: item?.title ?? "Interio Spaces direction" },
       ],
-      links: [{ rel: "canonical", href: `/store/${params.slug}/${params.itemId}` }],
+      links: [{ rel: "canonical", href: `/interiors/services/${params.slug}/${params.itemId}` }],
     };
   },
   loader: ({ params }) => {
-    const cat = storeCategories.find((c) => c.slug === params.slug);
+    const cat = interiorCategories.find((c) => c.slug === params.slug);
     if (!cat) throw notFound();
     const item = cat.items.find((it) => it.id === params.itemId);
     if (!item) throw notFound();
     return { cat, item };
   },
-  component: ProductVariantsPage,
+  component: DirectionVariantsPage,
   notFoundComponent: () => (
     <div className="max-w-3xl mx-auto py-32 text-center">
-      <h1 className="font-display text-5xl">Piece not found</h1>
-      <Link to="/store" className="btn-quote mt-8 inline-block">Back to Store</Link>
-    </div>
-  ),
-  errorComponent: ({ error }) => (
-    <div className="max-w-3xl mx-auto py-32 text-center">
-      <h1 className="font-display text-4xl">Something went quiet.</h1>
-      <p className="mt-4 text-[var(--muted-foreground)]">{error.message}</p>
+      <h1 className="font-display text-5xl">Direction not found</h1>
+      <Link to="/interiors" className="btn-quote mt-8 inline-block">Back to Services</Link>
     </div>
   ),
 });
 
-const finishes = [
-  "Studio Edit", "Atelier Alt", "Heritage Patina", "Brass Inlay", "Walnut Trim",
-  "Carrara Marble", "Oxblood Velvet", "Ivory Linen", "Verde Marble", "Hand-Painted",
+const moods = [
+  "Studio Edit", "Heritage Mood", "Modern Restraint", "Brass & Walnut", "Marble & Linen",
+  "Verde Forest", "Oxblood Salon", "Ivory Atelier", "Hand-Carved", "Bespoke Commission",
 ];
 
-function ProductVariantsPage() {
+function DirectionVariantsPage() {
   const { cat, item } = Route.useLoaderData();
-
   const pool = pickFor(cat.slug);
-  // Use the pool for both base and hover (offset by 1 for hover swap variety).
 
-  // Always render 10 variant cards. Fall back to the product's own image if
-  // the user hasn't yet dropped JPGs into the folder.
   const variants = Array.from({ length: 10 }).map((_, i) => ({
     id: `v-${i + 1}`,
-    label: `Variant ${String(i + 1).padStart(2, "0")} — ${finishes[i % finishes.length]}`,
+    label: `${moods[i % moods.length]} · ${String(i + 1).padStart(2, "0")}`,
     image: pool[i] ?? item.image,
-    hover: pool[(i + 1) % Math.max(pool.length, 1)] ?? item.hoverImage ?? item.image,
+    hover: pool[(i + 1) % Math.max(pool.length, 1)] ?? item.image,
     blurb: i % 2
-      ? "An alternate material direction — available on commission, calibrated to your room."
-      : "The studio's primary edit — the finish most often asked for in this collection.",
+      ? "An alternate direction — same room, different soul. Available on commission."
+      : "The studio's primary direction for this chapter — calibrated to your room.",
   }));
 
   return (
     <section className="max-w-7xl mx-auto px-6 lg:px-12 py-20">
       <Link
-        to="/store/$slug"
+        to="/interiors/services/$slug"
         params={{ slug: cat.slug }}
         className="eyebrow hover:text-[var(--gold)]"
       >
@@ -86,17 +76,11 @@ function ProductVariantsPage() {
       </Link>
 
       <div className="mt-6 mb-12 max-w-3xl">
-        <div className="eyebrow">Hodch Store · {cat.name}</div>
+        <div className="eyebrow">Interio Spaces · {cat.name}</div>
         <h1 className="font-display text-5xl lg:text-7xl mt-3 leading-[1.02]">{item.title}.</h1>
-        {item.price && (
-          <div className="mt-5">
-            <span className="price-chip">{item.price}</span>
-            <span className="ml-3 text-xs text-[var(--muted-foreground)] italic">price on request adjustable</span>
-          </div>
-        )}
         <div className="gold-divider my-10">
           <span className="line" />
-          <span className="text-xs tracking-[0.4em] uppercase font-sans">Ten Varieties</span>
+          <span className="text-xs tracking-[0.4em] uppercase font-sans">Ten Directions</span>
           <span className="line" />
         </div>
       </div>
@@ -146,10 +130,10 @@ function ProductVariantsPage() {
               <h3 className="font-display text-2xl mt-1">{v.label}</h3>
               <p className="font-serif italic text-sm text-[var(--muted-foreground)] mt-2 max-w-md">{v.blurb}</p>
               <a
-                href={`mailto:studio@rsd.in?subject=Quote%20Request%20-%20${encodeURIComponent(item.title + " - " + v.label)}`}
+                href={`mailto:studio@rsd.in?subject=Commission%20-%20${encodeURIComponent(item.title + " - " + v.label)}`}
                 className="btn-quote inline-block mt-4"
               >
-                Get Quote
+                Begin a Commission
               </a>
             </figcaption>
           </motion.figure>

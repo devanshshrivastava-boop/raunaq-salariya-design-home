@@ -251,3 +251,23 @@
   position: absolute; top: -9px; left: 50%; transform: translateX(-50%);
   box-shadow: 0 2px 4px rgba(0,0,0,0.35);
 }
+
+/* ────────── Subtle falling gold glitter (hero) ────────── */
+@keyframes rsd-mote-fall {
+  0%   { transform: translate3d(0, 0, 0) scale(0.9); opacity: 0; }
+  8%   { opacity: var(--mote-op, 0.35); }
+  50%  { transform: translate3d(calc(var(--drift, 0px) * 0.6), 55vh, 0) scale(1); }
+  92%  { opacity: var(--mote-op, 0.35); }
+  100% { transform: translate3d(var(--drift, 0px), 110vh, 0) scale(0.85); opacity: 0; }
+}
+.rsd-mote {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle, color-mix(in oklab, var(--gold) 85%, white) 0%, color-mix(in oklab, var(--gold) 40%, transparent) 60%, transparent 100%);
+  box-shadow: 0 0 6px color-mix(in oklab, var(--gold) 55%, transparent);
+  mix-blend-mode: screen;
+  animation-name: rsd-mote-fall;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}

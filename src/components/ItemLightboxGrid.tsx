@@ -12,6 +12,7 @@ export function ItemLightboxGrid({
   hoverSwap = false,
   linkToVariants = false,
   fancy = false,
+  variantsBase = "store",
 }: {
   items: ImageItem[];
   categorySlug: string;
@@ -19,10 +20,12 @@ export function ItemLightboxGrid({
   showPrice?: boolean;
   /** When true, hovering a card crossfades to `item.hoverImage` (HODCH only). */
   hoverSwap?: boolean;
-  /** When true, clicking a card navigates to /store/$slug/$itemId instead of opening the modal. */
+  /** When true, clicking a card navigates to the variants page instead of opening the modal. */
   linkToVariants?: boolean;
   /** Enables 3D tilt, shimmer sweep, scale-up, saturation boost, sliding label. */
   fancy?: boolean;
+  /** Which variants route to navigate to when linkToVariants is true. */
+  variantsBase?: "store" | "interiors";
 }) {
   const [active, setActive] = useState<ImageItem | null>(null);
   const { toggle, has } = useBookmarks();
@@ -41,6 +44,7 @@ export function ItemLightboxGrid({
               hoverSwap={hoverSwap}
               linkToVariants={linkToVariants}
               categorySlug={categorySlug}
+              variantsBase={variantsBase}
               showPrice={showPrice}
               onActivate={() => setActive(it)}
               saved={saved}
@@ -98,6 +102,7 @@ function FancyCard({
   hoverSwap,
   linkToVariants,
   categorySlug,
+  variantsBase = "store",
   showPrice,
   onActivate,
   saved,
@@ -109,6 +114,7 @@ function FancyCard({
   hoverSwap: boolean;
   linkToVariants: boolean;
   categorySlug: string;
+  variantsBase?: "store" | "interiors";
   showPrice?: boolean;
   onActivate: () => void;
   saved: boolean;
@@ -234,14 +240,25 @@ function FancyCard({
       className="group"
     >
       {linkToVariants ? (
-        <Link
-          to="/store/$slug/$itemId"
-          params={{ slug: categorySlug, itemId: item.id }}
-          className="block w-full text-left"
-          data-cursor="hover"
-        >
-          {cardInner}
-        </Link>
+        variantsBase === "interiors" ? (
+          <Link
+            to="/interiors/services/$slug/$itemId"
+            params={{ slug: categorySlug, itemId: item.id }}
+            className="block w-full text-left"
+            data-cursor="hover"
+          >
+            {cardInner}
+          </Link>
+        ) : (
+          <Link
+            to="/store/$slug/$itemId"
+            params={{ slug: categorySlug, itemId: item.id }}
+            className="block w-full text-left"
+            data-cursor="hover"
+          >
+            {cardInner}
+          </Link>
+        )
       ) : (
         <button onClick={onActivate} className="block w-full text-left" data-cursor="hover">
           {cardInner}

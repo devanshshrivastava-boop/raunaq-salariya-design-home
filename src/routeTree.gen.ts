@@ -20,6 +20,8 @@ import { Route as InteriorsJournalRouteImport } from './routes/interiors.journal
 import { Route as StoreSlugIndexRouteImport } from './routes/store.$slug.index'
 import { Route as StoreSlugItemIdRouteImport } from './routes/store.$slug.$itemId'
 import { Route as InteriorsServicesSlugRouteImport } from './routes/interiors.services.$slug'
+import { Route as InteriorsServicesSlugIndexRouteImport } from './routes/interiors.services.$slug.index'
+import { Route as InteriorsServicesSlugItemIdRouteImport } from './routes/interiors.services.$slug.$itemId'
 
 const StoreRoute = StoreRouteImport.update({
   id: '/store',
@@ -76,6 +78,18 @@ const InteriorsServicesSlugRoute = InteriorsServicesSlugRouteImport.update({
   path: '/services/$slug',
   getParentRoute: () => InteriorsRoute,
 } as any)
+const InteriorsServicesSlugIndexRoute =
+  InteriorsServicesSlugIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => InteriorsServicesSlugRoute,
+  } as any)
+const InteriorsServicesSlugItemIdRoute =
+  InteriorsServicesSlugItemIdRouteImport.update({
+    id: '/$itemId',
+    path: '/$itemId',
+    getParentRoute: () => InteriorsServicesSlugRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -86,9 +100,11 @@ export interface FileRoutesByFullPath {
   '/interiors/process': typeof InteriorsProcessRoute
   '/store/$slug': typeof StoreSlugRouteWithChildren
   '/interiors/': typeof InteriorsIndexRoute
-  '/interiors/services/$slug': typeof InteriorsServicesSlugRoute
+  '/interiors/services/$slug': typeof InteriorsServicesSlugRouteWithChildren
   '/store/$slug/$itemId': typeof StoreSlugItemIdRoute
   '/store/$slug/': typeof StoreSlugIndexRoute
+  '/interiors/services/$slug/$itemId': typeof InteriorsServicesSlugItemIdRoute
+  '/interiors/services/$slug/': typeof InteriorsServicesSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -97,9 +113,10 @@ export interface FileRoutesByTo {
   '/interiors/journal': typeof InteriorsJournalRoute
   '/interiors/process': typeof InteriorsProcessRoute
   '/interiors': typeof InteriorsIndexRoute
-  '/interiors/services/$slug': typeof InteriorsServicesSlugRoute
   '/store/$slug/$itemId': typeof StoreSlugItemIdRoute
   '/store/$slug': typeof StoreSlugIndexRoute
+  '/interiors/services/$slug/$itemId': typeof InteriorsServicesSlugItemIdRoute
+  '/interiors/services/$slug': typeof InteriorsServicesSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -111,9 +128,11 @@ export interface FileRoutesById {
   '/interiors/process': typeof InteriorsProcessRoute
   '/store/$slug': typeof StoreSlugRouteWithChildren
   '/interiors/': typeof InteriorsIndexRoute
-  '/interiors/services/$slug': typeof InteriorsServicesSlugRoute
+  '/interiors/services/$slug': typeof InteriorsServicesSlugRouteWithChildren
   '/store/$slug/$itemId': typeof StoreSlugItemIdRoute
   '/store/$slug/': typeof StoreSlugIndexRoute
+  '/interiors/services/$slug/$itemId': typeof InteriorsServicesSlugItemIdRoute
+  '/interiors/services/$slug/': typeof InteriorsServicesSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,6 +148,8 @@ export interface FileRouteTypes {
     | '/interiors/services/$slug'
     | '/store/$slug/$itemId'
     | '/store/$slug/'
+    | '/interiors/services/$slug/$itemId'
+    | '/interiors/services/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -137,9 +158,10 @@ export interface FileRouteTypes {
     | '/interiors/journal'
     | '/interiors/process'
     | '/interiors'
-    | '/interiors/services/$slug'
     | '/store/$slug/$itemId'
     | '/store/$slug'
+    | '/interiors/services/$slug/$itemId'
+    | '/interiors/services/$slug'
   id:
     | '__root__'
     | '/'
@@ -153,6 +175,8 @@ export interface FileRouteTypes {
     | '/interiors/services/$slug'
     | '/store/$slug/$itemId'
     | '/store/$slug/'
+    | '/interiors/services/$slug/$itemId'
+    | '/interiors/services/$slug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -241,21 +265,50 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InteriorsServicesSlugRouteImport
       parentRoute: typeof InteriorsRoute
     }
+    '/interiors/services/$slug/': {
+      id: '/interiors/services/$slug/'
+      path: '/'
+      fullPath: '/interiors/services/$slug/'
+      preLoaderRoute: typeof InteriorsServicesSlugIndexRouteImport
+      parentRoute: typeof InteriorsServicesSlugRoute
+    }
+    '/interiors/services/$slug/$itemId': {
+      id: '/interiors/services/$slug/$itemId'
+      path: '/$itemId'
+      fullPath: '/interiors/services/$slug/$itemId'
+      preLoaderRoute: typeof InteriorsServicesSlugItemIdRouteImport
+      parentRoute: typeof InteriorsServicesSlugRoute
+    }
   }
 }
+
+interface InteriorsServicesSlugRouteChildren {
+  InteriorsServicesSlugItemIdRoute: typeof InteriorsServicesSlugItemIdRoute
+  InteriorsServicesSlugIndexRoute: typeof InteriorsServicesSlugIndexRoute
+}
+
+const InteriorsServicesSlugRouteChildren: InteriorsServicesSlugRouteChildren = {
+  InteriorsServicesSlugItemIdRoute: InteriorsServicesSlugItemIdRoute,
+  InteriorsServicesSlugIndexRoute: InteriorsServicesSlugIndexRoute,
+}
+
+const InteriorsServicesSlugRouteWithChildren =
+  InteriorsServicesSlugRoute._addFileChildren(
+    InteriorsServicesSlugRouteChildren,
+  )
 
 interface InteriorsRouteChildren {
   InteriorsJournalRoute: typeof InteriorsJournalRoute
   InteriorsProcessRoute: typeof InteriorsProcessRoute
   InteriorsIndexRoute: typeof InteriorsIndexRoute
-  InteriorsServicesSlugRoute: typeof InteriorsServicesSlugRoute
+  InteriorsServicesSlugRoute: typeof InteriorsServicesSlugRouteWithChildren
 }
 
 const InteriorsRouteChildren: InteriorsRouteChildren = {
   InteriorsJournalRoute: InteriorsJournalRoute,
   InteriorsProcessRoute: InteriorsProcessRoute,
   InteriorsIndexRoute: InteriorsIndexRoute,
-  InteriorsServicesSlugRoute: InteriorsServicesSlugRoute,
+  InteriorsServicesSlugRoute: InteriorsServicesSlugRouteWithChildren,
 }
 
 const InteriorsRouteWithChildren = InteriorsRoute._addFileChildren(

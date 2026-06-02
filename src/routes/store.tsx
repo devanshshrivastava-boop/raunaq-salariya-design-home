@@ -3,11 +3,11 @@ import { storeCategories } from "@/lib/data";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CollageGrid, CollageSection, type CollageTile } from "@/components/CollageGrid";
 import storeHero from "@/assets/store-hero.jpg";
-import sofa from "@/assets/store-sofa.jpg";
-import chandelier from "@/assets/store-chandelier.jpg";
-import chair from "@/assets/store-chair.jpg";
-import rug from "@/assets/store-rug.jpg";
-import wall from "@/assets/store-wall.jpg";
+import sofa from "@/assets/hodch/sofas/card.jpg";
+import chandelier from "@/assets/hodch/chandeliers/card.jpg";
+import chair from "@/assets/hodch/chairs/card.jpg";
+import rug from "@/assets/hodch/rugs/card.jpg";
+import wall from "@/assets/hodch/wall/card.jpg";
 
 export const Route = createFileRoute("/store")({
   head: () => ({
